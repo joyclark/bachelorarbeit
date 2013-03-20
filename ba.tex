@@ -1,0 +1,89 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Uni Duesseldorf
+% Lehrstuhl fuer Datenbanken und Informationssysteme
+% Vorlage fuer Bachelor-/Masterarbeiten
+% Optimiert fuer den Original-Latex-Kompiler LATEX.EXE (LaTeX=>PS=>PDF)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Ueberarbeitung für pdflatex (LaTeX=>PDF)
+% Version 1.XXX - 16.4.2012
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% BEGINN EINSTELLUNG FUER DIE ARBEIT. UNBEDINGT ERFORDERLICH! %%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Geben Sie Ihren Namen hier an:
+\newcommand{\bearbeiter}{Joy Clark}
+
+% Geben Sie hier den Titel Ihrer Arbeit an:
+\newcommand{\titel}{Data Visualization in ProB}
+
+% Geben Sie das Datum des Beginns und Ende der Bachelorarbeit ein:
+\newcommand{\beginndatum}{14. M\"{a}rz 2013}
+\newcommand{\abgabedatum}{14. Juni 2013}
+
+% Geben Sie die Namen des Erst- und Zweitgutachters an:
+\newcommand{\erstgutachter}{Prof. Dr. Michael Leuschel}
+\newcommand{\zweitgutachter}{Prof. Dr. Frank Gurski}
+
+% Falls Sie die Arbeit zweiseitig ausdrucken wollen,
+% benutzen Sie die folgende Zeile mit
+% \AN fuer zweiseitigen Druck
+% \AUS fuer einseitigen Druck
+\newcommand{\zweiseitig}{\AN}
+
+% Falls die Arbeit in englischer Sprache verfasst 
+% werden soll, dann benutzen Sie die folgende Zeile mit
+% englisch fuer englische Sprache
+% deutsch fuer deutsche Sprache
+\newcommand{\sprache}{englisch}
+
+% Hier wird eingestellt, ob es sich bei der Arbeit um eine Bachelor- 
+% oder Masterarbeit handelt (unpassendes auskommentieren!):
+\newcommand{\arbeit}{Bachelorarbeit}
+%~ \newcommand{\arbeit}{Masterarbeit}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% ENDE EINSTELLUNGEN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Die folgende Zeile NICHT EDITIEREN oder loeschen
+\input{titelmakros}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% BEGINN TEXTTEIL %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Text entweder direkt hier hinein schreiben oder, im Sinne der
+% besseren Uebersichtlich- und Bearbeitbarkeit mittels \input die
+% einzelnen Textteile hier einbinden.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\input{introduction}
+\input{background}
+\input{motivation}
+\input{contribution}
+\input{related}
+\input{conclusion}
+\input{future}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%% ENDE TEXTTEIL %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\clearpage
+\bibliography{references}
+\bibliographystyle{alphadin}
+%\vspace*{\fill}
+
+\clearpage
+
+\listoffigures
+
+\listoftables
+
+%\pagebreak
+
+%\printindex
+\end{document}
