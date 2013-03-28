@@ -1,11 +1,37 @@
 \section{Background}
 
-The background.
+\subsection{B-Method}
 
-\subsection{d3 and JavaScript}
+The B-Method is a method of software development that uses the Classical B specification language to develop software. Classical B is a formalism that uses the concepts of set theory, logic, and numbers as a mathematical basis, and the concept of an Abstract Machine in order to model the behavior of a system. 
 
-Write about d3 and JavaScript.
+\marginpar{Define state, operation, variable, formula, invariant, etc.}
+
+[INSERT CITATION] defines an Abstract Machine as:
+
+\begin{quotation}
+
+Abstract Machines [...] are machines that encapsulate:
+
+\textbf{state} consisting of a set of variables constrained by an invariant
+
+\textbf{operations} operations may change the state, while maintaining the invariant, and may return a sequence of results.
+
+\end{quotation}
+
+
 
 \subsection{ProB}
 
-Write about ProB
+ProB is a software developed in order to animate and check models written in the Classical B, Event-B, CSP-M, TLA+, and Z specification languages. The software is written in the Prolog language, which is a logical programming language. There is a standalone version of the ProB software available with the graphical user interface written in Tcl/Tk. A binary command-line interface is also available for the software. 
+
+Two different projects are underway to create Java based APIs for the ProB CLI. The first version of the Java interface began in 2006. This version integrated the exiting ProB CLI into the Rodin platform.
+
+Planning for the ProB 2.0 API began in 2011. The main goal of the ProB 2.0 API was to adapt and optimize the existing Java API to build a user interface on top of a programmatic API. Functional programming techniques were used in the development of the software as much as possible. To meet these ends, the Groovy scripting language was heavily integrated into to the ProB 2.0 core. The ProB 2.0 API includes a fully functional webserver with servlets that allow the extension of the Java core into JavaScript and HTML. The fully functional webconsole available in the API makes use of this technology.
+
+\subsection{d3 and JavaScript}
+
+The web console interface in the ProB 2.0 API is written JavaScript and HTML. Since the web server structure is already available in the Java API, it made sense to develop data visualizations that could make use of the same structure. 
+
+D3 (Data-Driven Documents) is an open source JavaScript library that was developed for the visualization of different types of data. The output of the D3 functions is a pure SVG and HTML document object model that implements the W3C Selectors API. Because of this, the entire docmument can be styled using CSS and the developer has more control over how the resulting visualizations appear. Particular elements from within the DOM can also be selected using JQuery. 
+
+D3 includes support for visualizing both simple datasets and datasets that are more complex. Examples for simple data visualization include pie charts, line graphs, and bar graphs. More complex data structures such as the graph and tree data structures can be represented using the spring and tree layouts respectively.
