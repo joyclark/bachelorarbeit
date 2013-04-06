@@ -4,9 +4,15 @@
 
 The B-Method is a method of specifying and designing software systems that was originally created by J.R. Abrial \cite{abrial2005b}. Central to the B-Method are the concepts of \emph{abstract machines} that specify how a system should function \cite{schneider2001b}.
 
-An \emph{abstract machine} describes how a particular component should work by defining \emph{variables} that can take on certain values. The machine also defines \emph{operations} that define how the machine can change \emph{state}. A \emph{state} is composed of a set of variables constrained by an \emph{invariant}. In order for the model to be valid, the \emph{invariant} must evaluate to true for every state in the model.
+An \emph{abstract machine} describes how a particular component should work. In order to do this, the machine specifies \emph{operations} which describe how the machine should work. An \emph{operation} can change the \emph{state} of the machine. A \emph{state} is a set of \emph{variables} that are constrained by an \emph{invariant}. In order for the model to be valid, the \emph{invariant} must evaluate to true for every state in the model.
+
+Two specification languages used within the scope of the B-Method are Classical B and Event-B. There are several tools available to check and verify these specification languages [LIST TOOLS].
 
 \subsection{ProB}
+
+ProB is a tool created to verify formal specifications \cite{LeBu03_32}. In addition to verifying Classical B and Event-B specifications, ProB also verifies models written in the CSP-M, TLA+, and Z specification languages. ProB differs from other tools dealing with model verification in that it is fully automated. Several tools have also been written to extend ProB and add functionality.
+
+ProB verifies models through consistency checking and animation. Conistency checking is the systematic check of all states within a particular specification. In order to do this, ProB checks the state space of the specification in question. The state space is a graph with \emph{states} saved as vertices and \emph{operations} saved as edges.
 
 ProB is a model checker and animator for specifications written in the Classical B, Event-B, CSP-M, TLA+, and Z specification languages \cite{LeBu03_32}. There is a standalone version of the ProB software available with the graphical user interface written in Tcl/Tk. A binary command-line interface is also available for the software. 
 
@@ -14,12 +20,22 @@ In 2006, a project began to develop a ProB plug-in for the Rodin software suite 
 
 In the fall of 2011, planning for the ProB 2.0 API began.  The main goal of the ProB 2.0 API was to adapt and optimize the existing Java API to build a user interface on top of a programmatic API. Functional programming techniques were used in the development of the software as much as possible. To meet these ends, the Groovy scripting language was heavily integrated into to the ProB 2.0 core. The ProB 2.0 API includes a fully functional webserver with servlets that allow the extension of the Java core into JavaScript and HTML. The fully functional webconsole available in the API makes use of this technology.
 
-ProB verifies models through consistency checking. This is the systematic check of all states within a particular specification.
-
 \subsection{d3 and JavaScript}
 
-The web console interface in the ProB 2.0 API is written JavaScript and HTML. Since the web server structure is already available in the Java API, it made sense to develop data visualizations that could make use of the same structure. 
+The web console interface in the ProB 2.0 API is written JavaScript and HTML. Since the web server structure is already available in the Java API, it made sense to develop data visualizations that could make use of the same structure.
 
 D3 (Data-Driven Documents) is an open source JavaScript library that was developed for the visualization of different types of data. The output of the D3 functions is a pure SVG and HTML document object model that implements the W3C Selectors API. Because of this, the entire docmument can be styled using CSS and the developer has more control over how the resulting visualizations appear. Particular elements from within the DOM can also be selected using JQuery. 
 
 D3 includes support for visualizing both simple datasets and datasets that are more complex. Examples for simple data visualization include pie charts, line graphs, and bar graphs. More complex data structures such as the graph and tree data structures can be represented using the spring and tree layouts respectively.
+
+\subsubsection{Spring Layout}
+
+For the visualization of graphs, d3 has made the Spring layout available.
+
+\subsubsection{Tree Layout}
+
+In order to visualize trees, d3 has made the tree layout available. It is also relatively easy to build in a function so that the different nodes in the tree can be expanded or hidden.
+
+\subsubsection{Graphs and Charts}
+
+Visualizing simple line charts and bar graphs in d3 is as simple as generating the data points that are to be visualized.
