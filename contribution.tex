@@ -1,5 +1,11 @@
 \section{Contribution}
 
+\subsection{Visualization framework}
+
+One of the main issues that had to be dealt with at the beginning of the development process was the issue of how to integrate the visualizations into the ProB 2.0 API. At the time, the software already contained a functioning web server using Java servlets. Since the visualizations are written using Javascript and the d3 Javascript library, they needed to use the same framework. Because the visualizations needed to react to changes that take place during the animation of a model, they needed to be able to communicate with the ProB kernel. In order to accomplish this, a javascript function is invoked when the HTML page is loaded. This javascript sets up an interval so that the servlet that is responsible for the visualization is polled every 300 milliseconds to see if there are any changes. Both the servlet and the javascript function keep track of a counter that functions as a time stamp. This number is sent back and forth. If the javascript function identifies a discrepency between the numbers, it polls the servlet and then updates the visualization.
+
+A problem quickly arose because the servlet is a singleton object. There is only one servlet responsible for all of the visualizations of a particular type. The solution for this was to generate a unique session id for every visualization. Using this id, HTML content for the visualization is generated. When the HTML content is loaded, it calls the correct javascript function which sets up the polling interval and generates the visualization for the calculated data.
+
 \subsection{Visualization of the State Space}
 
 During the preliminary experiments for State Space visualization, several different graph libraries were tested out. D3 was chosen because it could process graphs of relatively large size in a way that was eye pleasing for users. Visualization of the state space uses the Spring layout that is available from the D3 library. Unfortunately, when visualizing state spaces with a very large amount of states and inputting them all at the default intitial position, it took rather long for a good visualization to emerge. Therefore, the FRLayout from the JUNG graph library was used as a static rendering engine to calculate the ideal initial positions for the states to be visualized in the graph.
