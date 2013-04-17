@@ -20,13 +20,15 @@ In 2006, a project began to develop a ProB plug-in for the Rodin software suite 
 
 In the fall of 2011, planning for the ProB 2.0 API began.  The main goal of the ProB 2.0 API was to adapt and optimize the existing Java API to build a user interface on top of a programmatic API. Functional programming techniques were used in the development of the software as much as possible. To meet these ends, the Groovy scripting language was heavily integrated into to the ProB 2.0 core. The ProB 2.0 API includes a fully functional webserver with servlets that allow the extension of the Java core into JavaScript and HTML. The fully functional webconsole available in the API makes use of this technology.
 
-\subsection{d3 and JavaScript}
+\subsection{D3 and JavaScript}
 
-The web console interface in the ProB 2.0 API is written JavaScript and HTML. Since the web server structure is already available in the Java API, it made sense to develop data visualizations that could make use of the same structure.
+Since a web server was already available in the ProB 2.0 application, it was plausible to create visualizations using javascript and HTML. The ProB 2.0 application is an Eclipse application, so it also would have been possible to create visualizations using a native Java or Eclipse library. I carried out an experiment at the beginning of this work to determine the feasibility of the different graph libraries. JUNG was considered because it is the software framework that is the ProB 2.0 API currently uses, but it was discarded because of the difficulty of embedding Swing visualizations into Eclipse applications. The ZEST graph library was a feasible option, but in the end, I chose to use the D3 library. 
 
-D3 (Data-Driven Documents) is an open source JavaScript library that was developed for the visualization of different types of data. The output of the D3 functions is a pure SVG and HTML document object model that implements the W3C Selectors API. Because of this, the entire docmument can be styled using CSS and the developer has more control over how the resulting visualizations appear. Particular elements from within the DOM can also be selected using JQuery. 
+D3 (Data-Driven Documents) is an open source JavaScript library that was developed for the visualization of different types of data. The output of the D3 functions is a pure SVG and HTML document object model that implements the W3C Selectors API. Because of this, the entire docmument can be styled using CSS and the developer has complete control over the appearance of the final product. 
 
-D3 includes support for visualizing both simple datasets and datasets that are more complex. Examples for simple data visualization include pie charts, line graphs, and bar graphs. More complex data structures such as the graph and tree data structures can be represented using the spring and tree layouts respectively.
+Using D3 also allowed the developer to have more control over how the content is updated. One of the main features of the ProB 2.0 API is its ability to manipulate its data structures dynamically through the use of the scripting language groovy. Because the D3 visualizations are written in Javascript, the thought was to give the user similar control over the visualizations. Using D3 selectors, it is easy to select the exact SVG and HTML elements of your visualization that you want to edit. Then you add or manipulate the attributes of the selected elements to obtain the desired visualization. It would also be theoretically possible to lift some of the functionality of the selectors from the Javascript level into the Java core. Then the user would be able to manipulate the visualization using the Groovy scripting language.
+
+D3 includes an API for visualizing many different kinds of data sets. Simple examples support for pie charts, line graphs, and bar graphs. More complex data structures such as the graph and tree data structures can be represented using the spring and tree layouts respectively. Extensive reference materials and examples are available on the D3 website.
 
 \subsubsection{Spring Layout}
 
@@ -38,4 +40,4 @@ In order to visualize trees, d3 has made the tree layout available. It is also r
 
 \subsubsection{Graphs and Charts}
 
-Visualizing simple line charts and bar graphs in d3 is as simple as generating the data points that are to be visualize
+Preparing the data for charts is as simple as generating the data points that are to be visualized. D3 includes support for determining and drawing the needed scale for the x and y access. 
