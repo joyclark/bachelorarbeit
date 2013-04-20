@@ -24,7 +24,7 @@ In the fall of 2011, planning for the ProB 2.0 API began.  The main goal of the 
 
 Since a web server was already available in the ProB 2.0 application, it was plausible to create visualizations using javascript and HTML. The ProB 2.0 application is an Eclipse application, so it also would have been possible to create visualizations using a native Java or Eclipse library. I carried out an experiment at the beginning of this work to determine the feasibility of the different graph libraries. JUNG was considered because it is the software framework that is the ProB 2.0 API currently uses, but it was discarded because of the difficulty of embedding Swing visualizations into Eclipse applications. The ZEST graph library was a feasible option, but in the end, I chose to use the D3 library. 
 
-D3 (Data-Driven Documents) is an open source JavaScript library that was developed for the visualization of different types of data. The output of the D3 functions is a pure SVG and HTML document object model that implements the W3C Selectors API. Because of this, the entire docmument can be styled using CSS and the developer has complete control over the appearance of the final product. 
+D3 (Data-Driven Documents) is an open source JavaScript library that was developed by Bostock, Ogievetsky, and Heer for the visualization of different types of data \cite{2011-d3}. The output of the D3 functions is a pure SVG and HTML document object model that implements the W3C Selectors API. Because of this, the entire docmument can be styled using CSS and the developer has complete control over the appearance of the final product. 
 
 Using D3 also allowed the developer to have more control over how the content is updated. One of the main features of the ProB 2.0 API is its ability to manipulate its data structures dynamically through the use of the scripting language groovy. Because the D3 visualizations are written in Javascript, the thought was to give the user similar control over the visualizations. Using D3 selectors, it is easy to select the exact SVG and HTML elements of your visualization that you want to edit. Then you add or manipulate the attributes of the selected elements to obtain the desired visualization. It would also be theoretically possible to lift some of the functionality of the selectors from the Javascript level into the Java core. Then the user would be able to manipulate the visualization using the Groovy scripting language.
 
@@ -32,7 +32,7 @@ D3 includes an API for visualizing many different kinds of data sets. Simple exa
 
 \subsubsection{Spring Layout}
 
-For the visualization of graphs, d3 has made the Spring layout available.
+For the visualization of graphs, d3 has made the Spring layout available. The algorithm used for the layout algorithm is based on the work of Dwyer and Jakobsen (\cite{Jakobsen03},\cite{Dwyer2009}).
 
 \subsubsection{Tree Layout}
 
@@ -40,4 +40,4 @@ In order to visualize trees, d3 has made the tree layout available. It is also r
 
 \subsubsection{Graphs and Charts}
 
-Preparing the data for charts is as simple as generating the data points that are to be visualized. D3 includes support for determining and drawing the needed scale for the x and y access. 
+Preparing the data for charts is as simple as generating the data points that are to be visualized. D3 includes support for determining and drawing the needed scale for the x and y access.  

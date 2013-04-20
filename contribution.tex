@@ -6,6 +6,18 @@ One of the main issues that had to be dealt with at the beginning of the develop
 
 A problem quickly arose because the servlet is a singleton object. There is only one servlet responsible for all of the visualizations of a particular type. The solution for this was to generate a unique session id for every visualization. Using this id, HTML content for the visualization is generated. When the HTML content is loaded, it calls the correct javascript function which sets up the polling interval and generates the visualization for the calculated data.
 
+Once I implemented a way to integrate the visualization servlets into the ProB 2.0 application, it was still necessary to implement an easy way for the user to interact with the visualizations. One of the main advantages of the D3 visualization framework is the flexibility for the user. Using the D3 selectors, it is possible for the user to select and change the attributes of any of the elements of the visualization. In order to offer this functionality to the users from within the ProB 2.0 application, we decided that we needed to lift the functionality from the javascript level into the existing groovy console in the Java 2.0 API. This was accomplished by creating a \texttt{Selection} object that represents the action that the user wants to carry out in the visualization. Then the \texttt{Selection} object is added to the particular visualization and is applied the next time the visualization is redrawn. The \texttt{Selection} object was written so that its functionality is similar to what the user would actually write using the D3 library.
+
+\begin{verbatim}
+\\In the Groovy Console:
+\\Define an object to tell the visualization to select the 
+\\ circles with ids #croot and #c1 and color them pink
+x = viz.selectAll("#croot,#c1").attr("fill","#f36")
+
+\\Add this selection to the visualization with session id "0"
+viz.addToSession("0",x)
+\end{verbatim}
+
 \subsection{Visualization of the State Space}
 
 During the preliminary experiments for State Space visualization, several different graph libraries were tested out. D3 was chosen because it could process graphs of relatively large size in a way that was eye pleasing for users. Visualization of the state space uses the Spring layout that is available from the D3 library. Unfortunately, when visualizing state spaces with a very large amount of states and inputting them all at the default intitial position, it took rather long for a good visualization to emerge. Therefore, the FRLayout from the JUNG graph library was used as a static rendering engine to calculate the ideal initial positions for the states to be visualized in the graph.
