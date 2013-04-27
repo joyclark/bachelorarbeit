@@ -41,6 +41,13 @@ Evaluation of a formula for takes place in the ProB prolog core. In the ProB 2.0
 
 The ProB CLI already supported the functionality of expanding a formula into its subformulas and finding its value at a given state. However, this functionality would only return the subformulas that were directly beneath the desired formula. For the visualization, it was desired that a given formula could be completely expanded and evaluated and then sent to the ProB 2.0 API. This would ensure that performance would not become an issue. It is now possible to register a Classical B formula in the core and then access the expanded and evaluated formula.
 
-In order to implement the visualization, the d3 tree layout was used. (ADD DIAGRAM OF VISUALIZATION)
+In order to implement the visualization, the d3 tree layout was used \ref{predicate}.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=15cm]{bilder/invariant.png}
+\caption{Visualization of the invariant of the Scheduler model}
+\label{predicate}
+\end{figure}
 
 This visualization is interactive. The user can select the nodes to expand or to retract the subformulas. It provides a visualization so that the user can easily interpret the formula. If the formula was evaluated to true for the given formula, the text of the formula is displayed in green. If the formula was evaluated as false, the text is displayed in red. This allows the user to automatically identify the parts of the formula that may have produced the problem. 
