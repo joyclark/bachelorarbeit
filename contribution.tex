@@ -16,21 +16,17 @@ When a state space visualization is opened, the visualization servlet responsibl
 \item{A special representation to show the root node within the graph.}
 \end{enumerate}
 
-Because of all of these things, it was rather difficult to create a useful visualization of the whole state space because the user not only wants to inspect how the state space appears as a whole but also the individual states within the operation. To solve this problem, we used the zoom functionality that is available in D3. The main problem was that if the visualization of the nodes was large enough for the user to read the values of the variable at the given state, it would no longer be possible to see the state space as a whole. Instead of trying to meet both requirements at once, we simply made the text that is printed on the node and edge objects very small. When the visualization is created, the user can inspect the graph as a whole how the graph appears as a whole. The text for the given nodes, however, is virtually indiscernable. If the user wants to inspect a particular node, they can do so by zooming into the visualization. The text is then larger, and the user can see the nodes that are in the direct neighborhood of the node in question. Then user can also click on the background of the visualization in order to pan through the visualization and inspect other nodes and edges.
+Because of all of these things, it was rather difficult to create a useful visualization of the whole state space because the user not only wants to inspect how the state space appears as a whole but also the individual states within the operation. To solve this problem, we used the zoom functionality that is available in D3. The main problem was that if the visualization of the nodes was large enough for the user to read the values of the variable at the given state, it would no longer be possible to see the state space as a whole. Instead of trying to meet both requirements at once, we simply made the text that is printed on the node and edge objects very small. When the visualization is created, the user can inspect the graph as a whole how the graph appears as a whole. The text for the given nodes, however, is virtually indiscernable. If the user wants to inspect a particular node, they can do so by zooming into the visualization. The text is then larger, and the user can see the nodes that are in the direct neighborhood of the node in question. Then user can also click on the background of the visualization in order to pan through the visualization and inspect other nodes and edges. The visualization is interactive. The user can grab a node and move it around to a desired position.
 
-The visualization of the edges was also not trivial. For most implementations of the force layout, developers use lines as edges. The problem with lines is that if multiple edges occur between two nodes (which happens almost always in a state space), the edges within the representation will be drawn on top of each other. To avoid this, it was necessary to use the SVG path object instead of the SVG line object. Then the paths are drawn with a curve and they do not appear on top of each other. It was also necessary to find a way to determine how many edges exist between two nodes, because if the arcs are generated statically, there is still a good possibility that they will be drawn on top of each other. It was also difficult to figure out how to draw self-loops. By default, self-loops are not drawn in force graphs, so it was necessary to find a way to do so.
+The visualization of the edges was also not trivial. For most implementations of the force layout, developers use lines as edges. The problem with lines is that if multiple edges occur between two nodes (which happens almost always in a state space), the edges within the representation will be drawn on top of each other. To avoid this, it was necessary to use the SVG path object instead of the SVG line object. Then the paths are drawn with a curve and they do not appear on top of each other. It was also necessary to find a way to determine how many edges exist between two nodes, because if the arcs are generated statically, there is still a good possibility that they will be drawn on top of each other. In order to do this, we identified and numbered multiple edges and self-loops. Then the edges and loops can be drawn and adjusted so that they are not drawn on top of each other.
 
-We also had some performance issues that were associated with very large state spaces. The force layout keeps adjusting the graph until it reaches a fix point. The problem was that as the state space grew, there were more and more objectst that had to be accounted for. The force layout just kept calculating and moving the the nodes. This didn't only affect the appearance of the visualization. It cost enough resources that the whole eclipse plugin would become unresponsive.
+We also had some performance issues that were associated with very large state spaces. The force layout keeps adjusting the graph until it reaches a fix point. The problem was that as the state space grew, there were more and more objectst that had to be accounted for. The force layout just kept calculating and moving the the nodes. This didn't only affect the appearance of the visualization. It cost enough resources that the whole eclipse plugin would become unresponsive. A quick fix to this problem was adding a play/pause button to the upper left hand corner of the visualization. When the user is satisfied with the visualization and how it is laid out, he can press the pause button, and the graph will stop being rendered. When he presses the play button, the rendering will begin again. The iterative force layout keeps running in the background, so when the rendering begins again, the visualization has had time to stabilize.
 
-One of the main problems with the web framework that was discovered at the start of the development process was the problem of how different state spaces should be visualized at the same time. The ProB 2.0 API supports the animation of multiple state spaces at any given time. When a state space visualization is created, it is created using the state space that is currently being animated. When the animation is switched, a new state space visualization can be created using the new state space that is being animated. The problem is that a state space visualization is not static. Since the state space that is being visualized changes over time when states are added into the graph, the visualization also needs to adapt and grow correspondingly. The solution to this is to have the instance of the state space visualization poll the state space regularly to get any new states that have been discovered. The problem occured because the servlet responsible for dealing with the state space was static. When the polling occured, the servlet did not know which instance of the state space was supposed to be polled.
+A visualization listens to any changes that take place within a state space. If new states and operations are discovered, the visualization is updated. Any new nodes that are added to the graph are added where their parent node is in the graph. This results in a nice animation when the new nodes are added into the graph.
 
+Status about the invariant is a available in the graph based on the color of the nodes. If an invariant violation is present, the node is colored red. Otherwise, the node is colored green.
 
-(NOT YET IMPLEMENTED)
-(ONCE IMPLEMENTED DESCRIBE THE DETAILS OF HOW IT IS IMPLEMENTED)
-The visualization of the state space is interactive. The user can grab the nodes within the state space and move them around so that they appear exactly as the user desires. Because it the whole visualization is completely written in d3 and Javascript, it is also possible for the user to dynamically change the DOM of the model using the method described in the above section.  This was solved by making the text of the node and edge objects very small. If the user wants to inspect a particular node, they can do so by zooming into the visualization. The text is then larger, and the user only needs to see the nodes that are in the direct neighborhood of the node in question. The user can also click on the background of the visualization in order to p(NOT YET IMPLEMENTED)
-(ONCE IMPLEMENTED DESCRIBE THE DETAILS OF HOW IT IS IMPLEMENTED)an and view the other nodes. 
-
-The user can also input Classical B formulas and thereby filter the graph. This uses the algorithms described in \cite{LeTu05_8}. The formula is applied to the state space and all states are merged for which the formula evaluates to the same result. The result is a smaller state space that can be viewed by the user.
+There is also support for the visualization of graphs that are derived from the state space. The ProB CLI support the generation of smaller graphs that are derived from the state space in question. These graphs are often easier to read than the state space as a whole. Currently, the only derived graph that is supported is the signature merge graph. The user can select derived graphs from a drop down menu.
 
 \subsection{Visualization of a formula}
 
@@ -69,20 +65,32 @@ A problem quickly arose because the servlet is a singleton object. There is only
 
 Once we implemented a way to integrate the visualization servlets into the ProB 2.0 application, it was still necessary to implement an easy way for the user to interact with the visualizations. One of the main advantages of the D3 visualization framework is the flexibility for the user. Using the D3 selectors, it is possible for the user to select and change the attributes of any of the elements of the visualization. In order to offer this functionality to the users from within the ProB 2.0 application, we decided that we needed to lift the functionality from the javascript level into the existing groovy console in the Java 2.0 API. This was accomplished by creating a \texttt{Transformer} object that represents the action that the user wants to carry out in the visualization. Then the \texttt{Transformer} object is added to the particular visualization and is applied the next time the visualization is redrawn. The \texttt{Transformer} object was written so that its functionality is similar to what the user would actually write using the D3 library.
 
-(NOT YET IMPLEMENTED. BUT THIS IS HOW IT SHOULD BE IMPLEMENTED.)
-We wanted how the user interacted with the visualization to be as natural as possible. The user should not have a hard time learning how to manipulate the visualization. For this reason, we decided to create a small DSL that would enable the user to specify which attributes should change within a particular visualization. When a visualization session is created, the visualization handler creates a variable within the groovy console. In this variable, an object is saved that communicates with a particular visualization servlet (e.g. the state space servlet) and tells the servlet that it wants to change itself. To do this, we used the functionality offered by Groovy Builders.
+We wanted how the user interacted with the visualization to be as natural as possible. The user should not have a hard time learning how to manipulate the visualization. For this reason, we decided to create a small DSL that would enable the user to specify which attributes should change within a particular visualization. It is possible for the user to create Transform objects in the console. This specifies a selection based on the W3C Selection API. It also specifies the attributes or styles that should be applied to the elements in question. Then this transformer is applied to a saved visualization.
 
 \begin{verbatim}
-\\In the Groovy Console:
 \\Tell the visualization corresponding to viz1 that it 
 \\should create a transformer with selection "#rroot,#r1". 
 \\It should then fill in the rectangles with the color red. 
-x = "#rroot,#r1" {
-    "fill" : "red"
-    "stroke" : "gray"
+x = transform("#rroot,#r1") {
+        set "fill", "red"
+        set "stroke", "gray"
 }
 
 viz0.apply(x)
+\end{verbatim}
+
+It is also possible to harness the power of the Groovy closure in order to create a Transformer that can be parameterized.
+
+\begin{verbatim}
+\\ Create a closure that can be parameterized
+colorize = { selection, color ->
+                transform(selection) {
+                    set "fill",color
+                }    
+           }
+
+\\ Create a transformer to color selection "#rroot,#r1" green
+viz0.apply(colorize("#rroot,#r1","green"))
 \end{verbatim}
 
 The ability to change visualizations in this way is built into all of the visualizations. It is therefore possible to manipulate all of the visualizations by changing the attributes that they contain.
