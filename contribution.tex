@@ -2,7 +2,7 @@
 
 \subsection{Visualization of the State Space}
 
-When a state space visualization is opened, the visualization servlet responsible for the state space visualization takes the state space associated with the current animation and extracts the information about the nodes and edges contained within the graph. This information is then processed by D3 using the force layout. Unfortunately, the state space contains an extremely large amount of information that has to be processed. This includes:
+When a state space visualization is opened, the visualization servlet responsible for the state space visualization takes the state space associated with the current animation and extracts the information about the nodes and edges contained within the graph. This information is then processed by D3 using the force layout. As a basis for the visualization, we used the Force Directed Graph example created by Michael Bostock (\ref{appendix:force}). Unfortunately, the state space contains an extremely large amount of information that has to be processed. This includes:
 
 \begin{enumerate}
 \item{How the state space graph appears as a whole.}
@@ -32,7 +32,7 @@ There is also support for the visualization of graphs that are derived from the 
 
 The ProB CLI already supported the functionality of expanding a formula into its subformulas and finding its value at a given state. However, the expanding of the formula took place lazily. A formula would be sent to the ProB CLI and then the direct subformulas of this formula would be sent back. The software would then have to contact ProB CLI recursively until all of the subformulas had been calculated and cached on the Java side. For the predicate visualization, we wanted the formula to be completely expanded and then sent in its entirety to the ProB 2.0 API. In order to do this, we implemented a prolog predicate within the ProB CLI that performs the recursive expanding of a B formula before it is sent back to the Java API. The predicate also delivers the value of each subformula for the given state. This ensures that performance will not an issue. 
 
-The final visualization is interactive \ref{predicate}. If a formula has subformulas, the user can select it from within the visualization to expand or to retract the subformulas. The subformulas are always either predicates or expressions. If they are expressions, they are colored white or light grey depending if they have subformulas or not. If the formula is a predicate that has evaluated to true for the given formula, the node is colored green. If the formula is a predicated that has evaluated to false, node is colored in red. The value of the given formula is also printed beneath the formula. This allows the user to visually identify the parts of the formulas and their given values. 
+The final visualization is interactive \ref{predicate}. If a formula has subformulas, the user can select it from within the visualization to expand or to retract the subformulas. The subformulas are always either predicates or expressions. If they are expressions, they are colored white or light grey depending on whether they have subformulas or not. If the formula is a predicate that has evaluated to true for the given formula, the node is colored green. If the formula is a predicated that has evaluated to false, node is colored in red. The value of the given formula is also printed beneath the formula. This allows the user to visually identify the parts of the formulas and their given values. 
 
 \begin{figure}[h!]
 \centering
@@ -41,7 +41,7 @@ The final visualization is interactive \ref{predicate}. If a formula has subform
 \label{predicate}
 \end{figure}
 
-In the implementation of the formula, the D3 tree layout is used. The expanding and collapsing of the nodes takes place with a simple JavaScript function. By harnessing the power of the D3 zoom behavior, it is also possible to zoom in and out of the visualization and to pan the image to inspect it closer. The servlet responsible for the visualization implements a listener to identify if any changes in the animation occur. If they do, the formula is recalculated for the new current state, and the visualization is redrawn.
+In the implementation of the formula, the D3 tree layout is used. The expanding and collapsing of the nodes takes place with a simple JavaScript function. This visualization is based on the Collapsible Tree Layout from the D3 website (\ref{appendix:tree}). By harnessing the power of the D3 zoom behavior, it is also possible to zoom in and out of the visualization and to pan the image to inspect it closer. The servlet responsible for the visualization implements a listener to identify if any changes in the animation occur. If they do, the formula is recalculated for the new current state, and the visualization is redrawn.
 
 \subsection{Visualization of the Value of a Formula Over Time}
 
@@ -67,30 +67,30 @@ Once we implemented a way to integrate the visualization servlets into the ProB 
 
 We wanted how the user interacted with the visualization to be as natural as possible. The user should not have a hard time learning how to manipulate the visualization. For this reason, we decided to create a small DSL that would enable the user to specify which attributes should change within a particular visualization. It is possible for the user to create Transform objects in the console. This specifies a selection based on the W3C Selection API. It also specifies the attributes or styles that should be applied to the elements in question. Then this transformer is applied to a saved visualization.
 
-\begin{verbatim}
-\\Tell the visualization corresponding to viz1 that it 
-\\should create a transformer with selection "#rroot,#r1". 
-\\It should then fill in the rectangles with the color red. 
+\lstset{language=java}
+\begin{lstlisting}[caption="Define rules for the transformation of visualization elements",label=tranformer]
+// Select elements with ids "rroot" and "r1" and set their fill and stroke attributes
 x = transform("#rroot,#r1") {
         set "fill", "red"
         set "stroke", "gray"
 }
 
+// Apply to visualization
 viz0.apply(x)
-\end{verbatim}
+\end{lstlisting}
 
 It is also possible to harness the power of the Groovy closure in order to create a Transformer that can be parameterized.
 
-\begin{verbatim}
-\\ Create a closure that can be parameterized
+\begin{lstlisting}[caption="Use Groovy closures to generate Transformers",label=transWclosure]
+// Create a closure that can be parameterized
 colorize = { selection, color ->
                 transform(selection) {
                     set "fill",color
                 }    
            }
 
-\\ Create a transformer to color selection "#rroot,#r1" green
+// Color elements "rroot" and "r1" green
 viz0.apply(colorize("#rroot,#r1","green"))
-\end{verbatim}
+\end{lstlisting}
 
 The ability to change visualizations in this way is built into all of the visualizations. It is therefore possible to manipulate all of the visualizations by changing the attributes that they contain.
