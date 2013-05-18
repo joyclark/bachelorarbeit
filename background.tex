@@ -50,7 +50,7 @@ the document object model based on data'' which is written in JavaScript \cite{2
 
 \subsubsection{Core Functionality}
 
-D3 provides a selector API based on CSS3 that is similar to jQuery \footnote{http://jquery.com}. The user creates visualizations by selecting sections of the document and binding them to user provided data in the form of an array of arbitrary values \cite{2011-d3}. D3 provides support for parsing JSON, XML, HTML, CSV, and TSV files. Once the data is bound to the desired section of the document, D3 can append an HTML or SVG element onto the section for each element of data. This is where the real power of D3 lies because the user can define the attributes of the element dynamically based on the values of the datum in question. By changing these attributes (e.g. size, radius, color) the resulting document already presents the data in a way that the viewer visually understands. The core also provides support for working with arrays and for defining transitions that can be used to animate the document. In order to better understand how D3 works, we have provided a simple example of a how a developer can use D3 to create an HTML dropdown menu (\ref{d3Example}). The generated HTML snippet is also provided (\ref{d3Result}). A more complicated example using the force layout is available in the appendix (\ref{appendix:force}).
+D3 provides a selector API based on CSS3 that is similar to jQuery \footnote{http://jquery.com}. The user creates visualizations by selecting sections of the document and binding them to user provided data in the form of an array of arbitrary values \cite{2011-d3}. D3 provides support for parsing JSON, XML, HTML, CSV, and TSV files. Once the data is bound to the desired section of the document, D3 can append an HTML or SVG element onto the section for each element of data. This is where the real power of D3 lies because the user can define the attributes of the element dynamically based on the values of the datum in question. By changing these attributes (e.g. size, radius, color) the resulting document already presents the data in a way that the viewer visually understands. The core also provides support for working with arrays and for defining transitions that can be used to animate the document. In order to better understand how D3 works, we have provided a simple example of a how a developer can use D3 to create an HTML dropdown menu (see Listing \ref{d3Example}). The generated HTML snippet is also provided (see Listing \ref{d3Result}). A more complicated example using the force layout is available in the appendix (see Appendix \ref{appendix:force}).
 
 \subsubsection{Further Functionality}
 
@@ -92,7 +92,7 @@ dropdown.select("#op3")
 \end{lstlisting} 
 
 \lstset{language=HTML}
-\begin{lstlisting}[caption=Html generated from (\ref{d3Example}),label=d3Result]
+\begin{lstlisting}[caption=Html generated from Listing \ref{d3Example},label=d3Result]
 <div id=body>
     <select>
         <option id="op1">Option 1</option>
@@ -107,7 +107,7 @@ dropdown.select("#op3")
 
 The current visualizations available in the ProB Tcl/Tk application are powered using the GraphViz \footnote{http://www.graphviz.org} graph visualization software. In the ProB CLI, there is support for generating graphs for the state space in the DOT graph language. The problem with this, and the reason that we are researching other alternatives, is that drawing GraphViz graphs is extremely inefficient. However, for the state spaces that are derived using the signature merge algorithm, or for the transition diagrams that can be created from a state space, these graphs are quite pleasing to the eye. The derived graphs are also usually small enough that they can be drawn efficiently.
 
-For this reason, we wanted to some how be able to visualize small graphs written in the DOT language. In order to do this, we took advantage of the emscripten compiler \cite{emscripten}. This is a compiler that compiles LLVM bitcode to JavaScript so that it can be run in any browser. Any C programs can be compiled to LLVM. We used the Viz.js JavaScript library \footnote{https://github.com/mdaines/viz.js} developed by Mike Daines which has compiled GraphViz from C to JavaScript and provided a wrapper function to produce svg visualizations (\ref{vizJs}).
+For this reason, we wanted to some how be able to visualize small graphs written in the DOT language. In order to do this, we took advantage of the emscripten compiler \cite{emscripten}. This is a compiler that compiles LLVM bitcode to JavaScript so that it can be run in any browser. Any C programs can be compiled to LLVM. We used the Viz.js JavaScript library \footnote{https://github.com/mdaines/viz.js} developed by Mike Daines which has compiled GraphViz from C to JavaScript and provided a wrapper function to produce svg visualizations (see Listing \ref{vizJs}).
 
 \begin{lstlisting}[caption=Create a visualization with viz.js and insert it into an html page.,label=vizJs]
 svg = Viz("digraph { a -> b; }", "svg");
