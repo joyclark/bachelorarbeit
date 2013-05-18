@@ -1,5 +1,9 @@
 \section{Future Work}
 
-This work has created graphic visualizations using the d3 Javascript library. The same framework can be used to create other visualizations for other needs. For instance, there is no graphical representation of a state in the ProB 2.0 API. One future project could be to create a graphical representation of this state.
+One of the main features we implemented in this work was the creation of a visualization framework. Each visualization has its own unique elements, but the shared elements have been encapsulated so that they can be reused in other visualizations. This is true both on the server and the client side. The basic elements of a ProB visualization have been extracted into a JavaScript library. For instance, developers can now use this library to create a basic canvas which can be zoomed and panned. We have also implemented basic servlets that listen for animation and state space changes. These can easily be extended to create new servlets.
 
-It is also possible to adapt the new visualizations in order to add functionality. For instance, in order to view the information about a particular state within the state space, it would make sense to combine the state space visualization with the proposed state visualization. Then, when a state is clicked on within the state space visualization, a window could pop up displaying the state visualization for that particular state.
+We are currently developing a worksheet element for the ProB 2.0 Plugin. This will serve as documentation and a means to run groovy scripts within the ProB application. In the future, the visualizations created in the scope of this work will be embedded within this worksheet feature. 
+
+It will also be necessary to implement other data visualizations in ProB 2.0. For instance, there is currently no graphical represenation of a state. This visualization is available in the ProB Tcl/Tk application, but it still needs to be implemented within ProB 2.0.
+
+Current visualizations will also need to be maintained and updated to add functionality. For instance, it might be possible to integrate the proposed state visualization with the existing state space visualization. Then, when a user would select a state, a window would pop up displaying the state visualization for that particular state.
