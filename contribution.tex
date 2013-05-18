@@ -2,6 +2,13 @@
 
 \subsection{Visualization of the State Space}
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=15cm]{bilder/ss-zoomedOut.png}
+\caption{Visualization of the invariant of the Scheduler model}
+\label{zoomedOut}
+\end{figure}
+
 When a state space visualization is opened, the visualization servlet responsible for the state space visualization takes the state space associated with the current animation and extracts the information about the nodes and edges contained within the graph. This information is then processed by D3 using the force layout. As a basis for the visualization, we used the Force Directed Graph example created by Michael Bostock (\ref{appendix:force}). Unfortunately, the state space contains an extremely large amount of information that has to be processed. This includes:
 
 \begin{enumerate}
@@ -18,6 +25,13 @@ When a state space visualization is opened, the visualization servlet responsibl
 
 Because of all of these things, it was rather difficult to create a useful visualization of the whole state space because the user not only wants to inspect how the state space appears as a whole but also the individual states within the operation. To solve this problem, we used the zoom functionality that is available in D3. The main problem was that if the visualization of the nodes was large enough for the user to read the values of the variable at the given state, it would no longer be possible to see the state space as a whole. Instead of trying to meet both requirements at once, we simply made the text that is printed on the node and edge objects very small. When the visualization is created, the user can inspect the graph as a whole how the graph appears as a whole. The text for the given nodes, however, is virtually indiscernable. If the user wants to inspect a particular node, they can do so by zooming into the visualization. The text is then larger, and the user can see the nodes that are in the direct neighborhood of the node in question. Then user can also click on the background of the visualization in order to pan through the visualization and inspect other nodes and edges. The visualization is interactive. The user can grab a node and move it around to a desired position.
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=15cm]{bilder/ss-neighborhood.png}
+\caption{Visualization of the invariant of the Scheduler model}
+\label{neighborhood}
+\end{figure}
+
 The visualization of the edges was also not trivial. For most implementations of the force layout, developers use lines as edges. The problem with lines is that if multiple edges occur between two nodes (which happens almost always in a state space), the edges within the representation will be drawn on top of each other. To avoid this, it was necessary to use the SVG path object instead of the SVG line object. Then the paths are drawn with a curve and they do not appear on top of each other. It was also necessary to find a way to determine how many edges exist between two nodes, because if the arcs are generated statically, there is still a good possibility that they will be drawn on top of each other. In order to do this, we identified and numbered multiple edges and self-loops. Then the edges and loops can be drawn and adjusted so that they are not drawn on top of each other.
 
 We also had some performance issues that were associated with very large state spaces. The force layout keeps adjusting the graph until it reaches a fix point. The problem was that as the state space grew, there were more and more objectst that had to be accounted for. The force layout just kept calculating and moving the the nodes. This didn't only affect the appearance of the visualization. It cost enough resources that the whole eclipse plugin would become unresponsive. A quick fix to this problem was adding a play/pause button to the upper left hand corner of the visualization. When the user is satisfied with the visualization and how it is laid out, he can press the pause button, and the graph will stop being rendered. When he presses the play button, the rendering will begin again. The iterative force layout keeps running in the background, so when the rendering begins again, the visualization has had time to stabilize.
@@ -28,7 +42,48 @@ Status about the invariant is a available in the graph based on the color of the
 
 There is also support for the visualization of graphs that are derived from the state space. The ProB CLI support the generation of smaller graphs that are derived from the state space in question. These graphs are often easier to read than the state space as a whole. Currently, the only derived graph that is supported is the signature merge graph. The user can select derived graphs from a drop down menu.
 
-\subsection{Visualization of a formula}
+\subsubsection{Derived State Spaces}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=15cm]{bilder/sigmerge.png}
+\caption{D3 Visualization of signature merge for Scheduler example}
+\label{sigmerge}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=15cm]{bilder/transdiag-wo.png}
+\caption{D3 Visualization of the transition diagram of \texttt{active} in Scheduler example}
+\label{transdiag}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=15cm]{bilder/dotty-sigmerge.png}
+\caption{Dotty Visualization of signature merge for the Scheduler example}
+\label{sigmergeDotty}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=15cm]{bilder/transdiag-dotty-wo.png}
+\caption{Dotty Visualization of the transition diagram of \texttt{active} in Scheduler model}
+\label{transdiagDotty}
+\end{figure}
+
+\subsubsection{UI} 
+We also created the user interface.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=15cm]{bilder/sigmerge1.png}
+\caption{User interface to chose events for signature merge.}
+\label{sigMergeUI}
+\end{figure}
+
+
+\subsection{Visualization of a B-type Formula}
 
 The ProB CLI already supported the functionality of expanding a formula into its subformulas and finding its value at a given state. However, the expanding of the formula took place lazily. A formula would be sent to the ProB CLI and then the direct subformulas of this formula would be sent back. The software would then have to contact ProB CLI recursively until all of the subformulas had been calculated and cached on the Java side. For the predicate visualization, we wanted the formula to be completely expanded and then sent in its entirety to the ProB 2.0 API. In order to do this, we implemented a prolog predicate within the ProB CLI that performs the recursive expanding of a B formula before it is sent back to the Java API. The predicate also delivers the value of each subformula for the given state. This ensures that performance will not an issue. 
 
@@ -61,7 +116,21 @@ In order for the ProB 2.0 API to evaluate a formula, it extracts the list of sta
 
 One of the main issues that we had to be deal with at the beginning of the development process was the issue of how to integrate the visualizations into the ProB 2.0 API. At the time, the software already contained a functioning web server using Java servlets. Since the visualizations are written using Javascript and the d3 Javascript library, they needed to use the same framework. Because the visualizations needed to react to changes that take place during the animation of a model, they needed to be able to communicate with the ProB kernel. In order to accomplish this, a javascript function is invoked when the HTML page is loaded. This javascript sets up an interval so that the servlet that is responsible for the visualization is polled every 300 milliseconds to see if there are any changes. Both the servlet and the javascript function keep track of a counter that functions as a time stamp. This number is sent back and forth. If the javascript function identifies a discrepency between the numbers, it polls the servlet and then updates the visualization.
 
-A problem quickly arose because the servlet is a singleton object. There is only one servlet responsible for all of the visualizations of a particular type. However, a static html page will always start with exactly the same values, and there is no good way for the javascript instances to determine what visualization they should belong to based on the content in the html page. The solution for this was to generate a unique session id for every visualization. Using this id, an HTML page for the visualization is generated containing this unique identification number. When the HTML content is loaded, it calls the initialize function in the JavaScript script with the identification number as an id. The JavaScript then sets up a polling interval and generates the visualization for the calculated data.
+\begin{figure}[h!]
+\centering
+\includegraphics[width=15cm]{bilder/communication.pdf}
+\caption{How visualizations communicate with the servlet that is responsible.}
+\label{communication}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=15cm]{bilder/programFlow.pdf}
+\caption{Model of the program flow.}
+\label{programFlow}
+\end{figure}
+
+A problem quickly arose because the servlet is a singleton object. There is only one servlet responsible for all of the visualizations of a particular type. However, a static html page will always start with exactly the same values, and there is no good way for the javascript instances to determine what visualization they should belong to based on the content in the html page. The solution for this was to generate a unique session id and a servlet for every visualization. Using this id, an HTML page for the visualization is generated containing this unique identification number. When the HTML content is loaded, it calls the initialize function in the JavaScript script with the identification number as an id. The main servlet then uses the session id to determine which visualization servlet is responsible for the The JavaScript then sets up a polling interval and generates the visualization for the calculated data.
 
 Once we implemented a way to integrate the visualization servlets into the ProB 2.0 application, it was still necessary to implement an easy way for the user to interact with the visualizations. One of the main advantages of the D3 visualization framework is the flexibility for the user. Using the D3 selectors, it is possible for the user to select and change the attributes of any of the elements of the visualization. In order to offer this functionality to the users from within the ProB 2.0 application, we decided that we needed to lift the functionality from the javascript level into the existing groovy console in the Java 2.0 API. This was accomplished by creating a \texttt{Transformer} object that represents the action that the user wants to carry out in the visualization. Then the \texttt{Transformer} object is added to the particular visualization and is applied the next time the visualization is redrawn. The \texttt{Transformer} object was written so that its functionality is similar to what the user would actually write using the D3 library.
 

@@ -6,4 +6,6 @@ We are currently developing a worksheet element for the ProB 2.0 Plugin. This wi
 
 It will also be necessary to implement other data visualizations in ProB 2.0. For instance, there is currently no graphical represenation of a state. This visualization is available in the ProB Tcl/Tk application, but it still needs to be implemented within ProB 2.0.
 
+The state space visualization and the visualization of a formula over time are not language specific. It is possible to use the visualizations for any specification language that ProB supports. For the visualization of the breakdown of a formula, however, this is not the case. The current implementation supports only Classical B and Event-B formulas. In the future, work could be done to support formulas from other formalisms.
+
 Current visualizations will also need to be maintained and updated to add functionality. For instance, it might be possible to integrate the proposed state visualization with the existing state space visualization. Then, when a user would select a state, a window would pop up displaying the state visualization for that particular state.
