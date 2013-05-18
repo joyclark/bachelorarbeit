@@ -5,7 +5,7 @@
 \begin{figure}[h!]
 \centering
 \includegraphics[width=15cm]{bilder/ss-zoomedOut.png}
-\caption{Visualization of the invariant of the Scheduler model}
+\caption{Visualization of the state space for the Scheduler example}
 \label{zoomedOut}
 \end{figure}
 
@@ -28,7 +28,7 @@ Because of all of these things, it was rather difficult to create a useful visua
 \begin{figure}[h!]
 \centering
 \includegraphics[width=15cm]{bilder/ss-neighborhood.png}
-\caption{Visualization of the invariant of the Scheduler model}
+\caption{Visualization of the neighborhood of a state in the state space visualization}
 \label{neighborhood}
 \end{figure}
 
@@ -77,9 +77,23 @@ We also created the user interface.
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=15cm]{bilder/sigmerge1.png}
+\includegraphics[width=15cm]{bilder/selectVisualization.png}
+\caption{The user can select the desired visualization.}
+\label{userSelect}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=15cm]{bilder/sigMergeUI.png}
 \caption{User interface to chose events for signature merge.}
 \label{sigMergeUI}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=15cm]{bilder/transDiag-UI.png}
+\caption{The user can input a new expression to recalculate the transition diagram.}
+\label{transDiagUI}
 \end{figure}
 
 
@@ -87,7 +101,7 @@ We also created the user interface.
 
 The ProB CLI already supported the functionality of expanding a formula into its subformulas and finding its value at a given state. However, the expanding of the formula took place lazily. A formula would be sent to the ProB CLI and then the direct subformulas of this formula would be sent back. The software would then have to contact ProB CLI recursively until all of the subformulas had been calculated and cached on the Java side. For the predicate visualization, we wanted the formula to be completely expanded and then sent in its entirety to the ProB 2.0 API. In order to do this, we implemented a prolog predicate within the ProB CLI that performs the recursive expanding of a B formula before it is sent back to the Java API. The predicate also delivers the value of each subformula for the given state. This ensures that performance will not an issue. 
 
-The final visualization is interactive \ref{predicate}. If a formula has subformulas, the user can select it from within the visualization to expand or to retract the subformulas. The subformulas are always either predicates or expressions. If they are expressions, they are colored white or light grey depending on whether they have subformulas or not. If the formula is a predicate that has evaluated to true for the given formula, the node is colored green. If the formula is a predicated that has evaluated to false, node is colored in red. The value of the given formula is also printed beneath the formula. This allows the user to visually identify the parts of the formulas and their given values. 
+The final visualization is interactive (\ref{predicate}). If a formula has subformulas, the user can select it from within the visualization to expand or to retract the subformulas. The subformulas are always either predicates or expressions. If they are expressions, they are colored white or light grey depending on whether they have subformulas or not. If the formula is a predicate that has evaluated to true for the given formula, the node is colored green. If the formula is a predicated that has evaluated to false, node is colored in red. The value of the given formula is also printed beneath the formula. This allows the user to visually identify the parts of the formulas and their given values. 
 
 \begin{figure}[h!]
 \centering
@@ -103,7 +117,7 @@ In the implementation of the formula, the D3 tree layout is used. The expanding 
 The ProB 2.0 API supports the evaluation of a given formula over the course of the history of an animation.
 Because a state is defined by the values that the variables take on when dealing with B type specification languages, it can be particularly interesting to be able to examine the value of a variable over the course of a trace when dealing with a Classical B or Event-B formula. 
 
-In order for the ProB 2.0 API to evaluate a formula, it extracts the list of states that the animation visits over the course of its history. Then it contacts the ProB CLI and extracts the value that the formlua takes on for each state in the list. This information is then processed by D3 to produce a simple line plot \ref{timeVsValue}. As of now, formulas can only be visualized if they take on integer values. In the future, we plan to support the visualization of formulas that take on boolean values. The visualization also interacts with the ProB 2.0 API. If the current state changes, the formula is recalculated and a new plot is produced.
+In order for the ProB 2.0 API to evaluate a formula, it extracts the list of states that the animation visits over the course of its history. Then it contacts the ProB CLI and extracts the value that the formlua takes on for each state in the list. This information is then processed by D3 to produce a simple line plot (\ref{timeVsValue}). As of now, formulas can only be visualized if they take on integer values. In the future, we plan to support the visualization of formulas that take on boolean values. The visualization also interacts with the ProB 2.0 API. If the current state changes, the formula is recalculated and a new plot is produced.
 
 \begin{figure}[h!]
 \centering
@@ -137,7 +151,7 @@ Once we implemented a way to integrate the visualization servlets into the ProB 
 We wanted how the user interacted with the visualization to be as natural as possible. The user should not have a hard time learning how to manipulate the visualization. For this reason, we decided to create a small DSL that would enable the user to specify which attributes should change within a particular visualization. It is possible for the user to create Transform objects in the console. This specifies a selection based on the W3C Selection API. It also specifies the attributes or styles that should be applied to the elements in question. Then this transformer is applied to a saved visualization.
 
 \lstset{language=java}
-\begin{lstlisting}[caption="Define rules for the transformation of visualization elements",label=tranformer]
+\begin{lstlisting}[caption=Define rules for the transformation of visualization elements,label=tranformer]
 // Select elements with ids "rroot" and "r1" and set their fill and stroke attributes
 x = transform("#rroot,#r1") {
         set "fill", "red"
@@ -150,7 +164,7 @@ viz0.apply(x)
 
 It is also possible to harness the power of the Groovy closure in order to create a Transformer that can be parameterized.
 
-\begin{lstlisting}[caption="Use Groovy closures to generate Transformers",label=transWclosure]
+\begin{lstlisting}[caption=Use Groovy closures to generate Transformers,label=transWclosure]
 // Create a closure that can be parameterized
 colorize = { selection, color ->
                 transform(selection) {
