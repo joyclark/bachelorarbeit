@@ -1,8 +1,13 @@
 \section{Introduction}
 
-The ProB Tcl/Tk application uses the DOTTY graph layout tool to create visualizations of data structures within the ProB application. Unfortunately, these data visualizations are completely missing in both the Java applications. In this work, we intend to inspect the data visualizations that are available in the Tcl/Tk application and recreate them in the Java 2.0 API. The visualizations should all use D3 and the existing webserver structure. After we are done implementing a few chosen visualizations, it should be possible to create similar visualizations using the principles that we have used. 
+In order to understand the data that is produced by software tools, it is important to be able to represent that data in a way that users can understand. The purpose of this work is to make useful visualizations for the ProB model checker and animator. 
 
-The concept of the state space is central to the ProB application. The state space is a directed multigraph. The states are saved as vertices in the graph and the operations within the graph are saved as directed edges that transition from one state to another. The main purpose of the ProB software is to verify this state space for inconsistencies. For instance, it is possible to use ProB to find states within the graph that violate the invariant for specification. It is also possible to find states from which there are no further operations possible. This is called a deadlock.
+One of the ProB tools, the ProB Tcl/Tk application, uses the DOTTY graph layout tool to create visualizations. However, these visualizations are missing in the ProB 2.0 Java application. In this work, we intend to inspect the data visualizations that are available in the Tcl/Tk application and recreate them for ProB 2.0. 
+
+For the scope of this work, we are not interested in inspecting algorithms for drawing graphs. We are interested in applying modern graph drawing tools with existing graph algorithms to create useful visualizations.
+
+We will use the D3 JavaScript tool to create visualizations that will be embedded into the ProB 2.0 application using the existing Jetty webserver.
+
 
 \subsection{Planned Visualizations}
 

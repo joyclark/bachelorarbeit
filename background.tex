@@ -14,6 +14,9 @@ ProB is a tool created to verify formal specifications \cite{LeBu08_225}. In add
 
 ProB verifies models through consistency checking \cite{LeBu03_32} and refinement checking \cite{LeBu05_5}. Conistency checking is the systematic check of all states within a particular specification. In order to do this, ProB checks the state space of the specification in question. The state space is a graph with \emph{states} saved as vertices and \emph{operations} saved as edges. Refinement checking examines the refinements of a machine to ensure that they are valid refinements.
 
+The concept of the state space is central to the ProB application. The state space is a directed multigraph. The states are saved as vertices in the graph and the operations within the graph are saved as directed edges that transition from one state to another. The main purpose of the ProB software is to verify this state space for inconsistencies. For instance, it is possible to use ProB to find states within the graph that violate the invariant for specification. It is also possible to find states from which there are no further operations possible. This is called a deadlock.
+
+
 \subsubsection{ProB Tools}
 
 ProB consists of several different tools that will be referenced throughout the course of this work. 
