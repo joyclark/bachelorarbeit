@@ -4,7 +4,7 @@
 
 \subsubsection{Structure}
 
-One of the main issues that we had to be deal with at the beginning of the development process was the issue of how to integrate the visualizations into the ProB 2.0 API. A functioning jetty server was already available, so we had to integrate our JavaScript visualizations into the existing framework. We ran into problems at the beginning, because a Java servlet is a singleton object. We needed to create a way to let the servlet know for which visualization it should be calculating. In order to do this, we created a session based servlet. When the user wants to open a visualization, the servlet is contacted. The servlet then creates a servlet responsible for the visualization and a unique session id. When a visualization sends a \texttt{GET} request, it includes its session id. The session based servlet then forwards the request to the the servlet that is responsible for the data calculations.
+One of the main issues that we had to be deal with at the beginning of the development process was the issue of how to integrate the visualizations into ProB 2.0. A functioning jetty server was already available, so we had to integrate our JavaScript visualizations into the existing framework. We ran into problems at the beginning, because a Java servlet is a singleton object. We needed to create a way to let the servlet know for which visualization it should be calculating. In order to do this, we created a session based servlet. When the user wants to open a visualization, the servlet is contacted. The servlet then creates a servlet responsible for the visualization and a unique session id. When a visualization sends a \texttt{GET} request, it includes its session id. The session based servlet then forwards the request to the the servlet that is responsible for the data calculations.
 
 The visualization communicates with the servlet by setting up a polling interval. It tells the state space if it needs the complete data set or just the changes since the last polling interval. The servlet then responds by sending the correct data (see Figure \ref{communication}).
 
@@ -16,7 +16,7 @@ The visualization communicates with the servlet by setting up a polling interval
 \end{figure}
 \end{center}
 
-The servlet is also connected to the ProB 2.0 API through the listener framework. Depending on the data that is needed for a particular visualization, the servlet registers either to receive notifications about changes in the current animation or about changes in the state space (see Figure \ref{programFlow}). Every time the servlet receives a new notification, the data needed for the visualization is recalculated.
+The servlet is also connected to ProB 2.0 through the listener framework. Depending on the data that is needed for a particular visualization, the servlet registers either to receive notifications about changes in the current animation or about changes in the state space (see Figure \ref{programFlow}). Every time the servlet receives a new notification, the data needed for the visualization is recalculated.
 
 \begin{center}
 \begin{figure}[h!]
@@ -28,7 +28,7 @@ The servlet is also connected to the ProB 2.0 API through the listener framework
 
 \subsubsection{User interaction with the visualizations}
 
-Once we implemented a way to integrate the visualization servlets into the ProB 2.0 application, it was still necessary to implement an easy way for the user to interact with the visualizations. One of the main advantages of the D3 visualization framework is the flexibility for the user. Using the D3 selectors, it is possible for the user to select and change the attributes of any of the elements of the visualization. In order to offer this functionality to the users from within the ProB 2.0 application, we decided that we needed to lift the functionality from the JavaScript level into the existing groovy console in the Java 2.0 API. This was accomplished by creating a \texttt{Transformer} object that represents the action that the user wants to carry out in the visualization. Then the \texttt{Transformer} object is added to the particular visualization and is applied the next time the visualization is redrawn. The \texttt{Transformer} object was written so that its functionality is similar to what the user would actually write using the D3 library.
+Once we implemented a way to integrate the visualization servlets into the ProB 2.0 application, it was still necessary to implement an easy way for the user to interact with the visualizations. One of the main advantages of the D3 visualization framework is the flexibility for the user. Using the D3 selectors, it is possible for the user to select and change the attributes of any of the elements of the visualization. In order to offer this functionality to the users from within the ProB 2.0 application, we decided that we needed to lift the functionality from the JavaScript level into the existing groovy console. This was accomplished by creating a \texttt{Transformer} object that represents the action that the user wants to carry out in the visualization. Then the \texttt{Transformer} object is added to the particular visualization and is applied the next time the visualization is redrawn. The \texttt{Transformer} object was written so that its functionality is similar to what the user would actually write using the D3 library.
 
 We wanted how the user interacted with the visualization to be as natural as possible. The user should not have a hard time learning how to manipulate the visualization. For this reason, we decided to create a small DSL that would enable the user to specify which attributes should change within a particular visualization. It is possible for the user to create \texttt{Transformers} in the console (see Listing \ref{transformer}). To do this, the user can specify a selection based on the W3C Selection API. It also specifies the attributes that should be changed for the specified selectors. The user can then apply this \texttt{Tranformer} to the servlet that is responsible for generating the data for a given transformation. To this purpose, when a new servlet is created, a variable is created in the groovy console that corresponds to the servlet in question so that the user can apply \texttt{Transformers} to the visualization directly.
 
@@ -50,12 +50,12 @@ It is also possible to harness the power of the Groovy closure in order to creat
 // Create a closure that can be parameterized
 colorize = { selection, color ->
                 transform(selection) {
-                    set "fill",color
+                    set "fill", color
                 }    
            }
 
 // Color elements "rroot" and "r1" green
-viz0.apply(colorize("#rroot,#r1","green"))
+viz0.apply(colorize("#rroot,#r1", "green"))
 \end{lstlisting}
 
 These \texttt{Transformers} are sent to the visualization every time that it is polled. The visualizations can then apply them. It is therefore possible for the user to manipulate the visualization. Unfortunately, in order to define these \texttt{Transformers}, the user needs to have some idea of how the elements are named internally. For the state space visualization, we also introduced an abstaction that filters a state space by predicate and produces a \texttt{Transformer} based on the states that are calculated (see Listing \ref{dynamicTransformer}). When new states are added to the state space, these will also be filtered based on the given predicate and the \texttt{Transformer} will be updated accordingly. 
@@ -88,7 +88,7 @@ svg.append(...);
 
 \begin{lstlisting}[caption=Apply list of \texttt{Transformers} received from servlet,label=applyStyling]
 // The servlet has been polled, and a response has been received
-var styling = response.styling
+var styling = response.styling;
 
 // ... Render the visualization
 // ... Then apply the user defined styling
@@ -128,7 +128,7 @@ Status about the invariant is a available in the graph based on the color of the
 
 \subsubsection{Visualization of Derived Graphs}
 
-There is also support for the visualization of graphs that are derived from the state space. The ProB CLI support the generation of smaller graphs that are derived from the state space in question. These graphs show information about state space that is not obvious when dealing with the state space as whole. Two algorithms for derived graph generation are currently supported. The signature merge algorithm is supported (see Figure \ref{sigmerge}). The user can also create a transition diagram based on a user defined expression (see Figure \ref{transdiag}). 
+There is also support for the visualization of graphs that are derived from the state space. ProB supports the generation of smaller graphs that are derived from the state space in question. These graphs show information about state space that is not obvious when dealing with the state space as whole. Two algorithms for derived graph generation are currently supported. The signature merge algorithm is supported (see Figure \ref{sigmerge}). The user can also create a transition diagram based on a user defined expression (see Figure \ref{transdiag}). 
 
 \begin{center}
 \begin{figure}[h!]
@@ -197,7 +197,7 @@ When the user chooses to create a transition diagram from the menu, a prompt app
 
 \subsection{Visualization of a B-type Formula}
 
-The ProB CLI already supported the functionality of expanding a formula into its subformulas and finding its value at a given state. However, the expanding of the formula took place lazily. A formula would be sent to the ProB CLI and then the direct subformulas of this formula would be sent back. The software would then have to contact ProB CLI recursively until all of the subformulas had been calculated and cached on the Java side. For the predicate visualization, we wanted the formula to be completely expanded and then sent in its entirety to the ProB 2.0 API. In order to do this, we implemented a prolog predicate within the ProB CLI that performs the recursive expanding of a B formula before it is sent back to the Java API. The predicate also delivers the value of each subformula for the given state. This ensures that performance will not an issue. 
+ProB already supported the functionality of expanding a formula into its subformulas and finding its value at a given state. However, the expanding of the formula took place lazily. A formula would be sent to ProB and then the direct subformulas of this formula would be sent back. The software would then have to contact ProB recursively until all of the subformulas had been calculated and cached. For the predicate visualization, we wanted the formula to be completely expanded and then sent in its entirety to ProB 2.0. In order to do this, we implemented a prolog predicate within ProB that performs the recursive expanding of a B formula before it is sent back to the ProB 2.0 application. The predicate also delivers the value of each subformula for the given state. This ensures that performance will not an issue. 
 
 The final visualization is interactive (see Figure \ref{predicate}). If a formula has subformulas, the user can select it from within the visualization to expand or to retract the subformulas. The subformulas are always either predicates or expressions. If they are expressions, they are colored white or light grey depending on whether they have subformulas or not. If the formula is a predicate that has evaluated to true for the given formula, the node is colored green. If the formula is a predicated that has evaluated to false, node is colored in red. The value of the given formula is also printed beneath the formula. This allows the user to visually identify the parts of the formulas and their given values. 
 
@@ -213,10 +213,10 @@ In the implementation of the formula, the D3 tree layout is used. The expanding 
 
 \subsection{Visualization of the Value of a Formula Over Time}
 
-The ProB 2.0 API supports the evaluation of a given formula over the course of the history of an animation.
+ProB 2.0 supports the evaluation of a given formula over the course of the history of an animation.
 Because a state is defined by the values that the variables take on when dealing with B type specification languages, it can be particularly interesting to be able to examine the value of a variable over the course of a trace when dealing with a Classical B or Event-B formula. 
 
-In order for the ProB 2.0 API to evaluate a formula, it extracts the list of states that the animation visits over the course of its history. Then it contacts the ProB CLI and extracts the value that the formlua takes on for each state in the list. This information is then processed by D3 to produce a simple line plot (see Figure \ref{timeVsValue}). As of now, formulas can only be visualized if they take on integer values. In the future, we plan to support the visualization of formulas that take on boolean values. The visualization also interacts with the ProB 2.0 API. If the current state changes, the formula is recalculated and a new plot is produced.
+In order for the ProB 2.0 to evaluate a formula, it extracts the list of states that the animation visits over the course of its history. Then it contacts ProB and extracts the value that the formlua takes on for each state in the list. This information is then processed by D3 to produce a simple line plot (see Figure \ref{timeVsValue}). Expressions that take on boolean values and integer values can be visualized. If the current state changes, the formula is recalculated and a new plot is produced.
 
 \begin{center}
 \begin{figure}[h!]

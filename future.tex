@@ -2,9 +2,9 @@
 
 One of the main features we implemented in this work was the creation of a visualization framework. Each visualization has its own unique elements, but some elements have been encapsulated so that they can be reused in other visualizations. This is true both on the server and the client side. The basic elements of a ProB visualization have been extracted into a JavaScript library. For instance, developers can now use this library to create a basic canvas which can be zoomed and panned. We have also implemented a basic servlet that can handle the communication between the visualization and the servlet responsible for the visualization. This can easily be extended to create new servlets.
 
-We are currently developing a worksheet element for the ProB 2.0 Plugin. This will serve as documentation and a means to run groovy scripts within the ProB application. In the future, it will be possible to embed the visualizations created in the scope of this work within the worksheet. 
+We are currently developing a worksheet element for ProB 2.0. This will serve as documentation and a means to run groovy scripts within the application. In the future, it will be possible to embed the visualizations created in the scope of this work within the worksheet. 
 
-It will also be necessary to implement other data visualizations in ProB 2.0. For instance, there is currently no graphical represenation of a state. This visualization is available in the ProB Tcl/Tk application, but it still needs to be implemented within ProB 2.0.
+It will also be necessary to implement other data visualizations in ProB 2.0. For instance, there is currently no graphical represenation of a state. This visualization is available in the ProB Tcl/Tk standalone application, but it still needs to be implemented within ProB 2.0.
 
 The state space visualization and the visualization of a formula over time are not language specific. It is possible to use the visualizations for any specification language that ProB supports. For the visualization of the breakdown of a formula, however, this is not the case. The current implementation supports only Classical B and Event-B formulas. In the future, work could be done to support formulas from other formalisms.
 
