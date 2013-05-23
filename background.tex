@@ -1,40 +1,18 @@
 \section{Background}
 
-\subsection{ProB}
+\subsection{ProB 2.0}
 
-ProB is a tool created to verify formal specifications \cite{LeBu08_225}. In addition to verifying Classical B and Event-B specifications, ProB also verifies models written in the CSP-M, TLA+, and Z specification languages. ProB differs from other tools dealing with model verification in that it is fully automated. Several tools have also been written to extend ProB and add functionality.
+ProB is written in primarily in SICStus prolog \cite{LeBu08_225}. This core is packaged as a binary executable command line interface, and several other tools have been built on top of it to provide the user with a functioning user interface. The user interface for the current standalone ProB application is written in Tcl/Tk. It is in this application that the GraphViz rendering engine has been integrated. 
 
-ProB verifies models through consistency checking \cite{LeBu03_32} and refinement checking \cite{LeBu05_5}. Conistency checking is the systematic check of all states within a particular specification. In order to do this, ProB checks the state space of the specification in question. The state space is a graph with \emph{states} saved as vertices and \emph{operations} saved as edges. Refinement checking examines the refinements of a machine to ensure that they are valid refinements.
+ProB 2.0 is another tool that is built on top of the ProB command line interface. It is the successor of an Eclipse RCP plugin that has been in development since 2005 \cite{BuHa07_292}. This application was created so that ProB could be integrated with the Rodin software, which is an easy to use and extensible tool platform for editing specifications written in the Event-B specification language.
 
-The concept of the state space is central to the ProB application. The state space is a directed multigraph. The states are saved as vertices in the graph and the operations within the graph are saved as directed edges that transition from one state to another. The main purpose of the ProB software is to verify this state space for inconsistencies. For instance, it is possible to use ProB to find states within the graph that violate the invariant for specification. It is also possible to find states from which there are no further operations possible. This is called a deadlock.
+In 2011, development for ProB 2.0 began. The main goal of ProB 2.0 was to adapt and optimize the existing Java application to produce a programmatic API. One of the main improvements made available in this tool was the introduction of a programmatic abstraction of the state space. It also provides a programmatic abstraction for the represenation of animations. This abstraction consists of the trace of transitions that have been executed during the course of an animation. This also provides the user with the concept of a current state. ProB 2.0 also contains a listener framework that is triggered whenever changes take place within a state space or within an animation.
 
+The core harnesses the power of the Groovy programming language. It integrates integrates a fully functioning groovy console into the final product. It is now possible for users and developers to write Groovy scripts that carry out desired functionality. There is also support for creating web applications that communicate with ProB. The console is actually a user interface that makes use of the jetty server that is integrated in the ProB 2.0. There are no eclipse dependencies present in the core, so it can be deployed as a jar file and integrated into any Java based application.
 
-\subsubsection{ProB Tools}
+ProB 2.0 also contains an Eclipse RCP Plugin that builds on top of the programmatic core and provides the interface with which the application can communicate with the Rodin platform. The graphical user interface is now built on top of the new programmatic abstractions that are available from the core, and changes that take place within the graphical interface are triggered by the listener framework.
 
-ProB consists of several different tools that will be referenced throughout the course of this work. 
-
-\begin{description}
-
-	\item[ProB CLI] \hfill \\ 
-	The ProB kernel is written in primarily in SICStus prolog \cite{LeBu08_225}. The ProB CLI is available as a binary executable, and all of the other tools listed here are built on top of it. The ProB CLI provides support for the interpretation of Classical B, Event-B, CSP-M, TLA+, and Z specification languages. These specifications are interpreted and translated into an internal represenation that can then be animated and model checked.
-
-	\item[ProB Tcl/Tk] \hfill \\
-	The ProB Tcl/Tk was created at the same time as the ProB CLI to provide a user interface for the ProB CLI. In addition to providing a UI for the ProB CLI, ProB Tcl/Tk also enables the user to edit specification files before animation, and provides the user with visualizations of different data that is generated during animation or model checking. For instance, ProB Tcl/Tk includes graphical visualizations for the state space, the current state, and for B predicates that are evaluated at the current state in the animation \cite{LeSaBeLu08_228} The ProB Tcl/Tk application uses the DOTTY tool available from the Graphviz graph layout software.
-
-	\item[ProB Plugin] \hfill \\
-	Work on the ProB Plugin began in 2005. This is an Eclipse plugin for the Rodin software \cite{BuHa07_292}, which is an easy to use and extensible tool platform for editing specifications written in the Event-B specification language. At this point, a socket server was integrated into the ProB CLI which allowed the ProB Plugin, which is written in Java, to communicate with the ProB CLI. The communication between the two takes place using queries and answers.
-
-	\item[ProB 2.0 API] \hfill \\
-	Development of the ProB 2.0 API began in 2011. The main goal of the ProB 2.0 API was to adapt and optimize the existing Java API to build a user interface on top of a programmatic API. One of the main improvements made available in this tool was the introduction of a programmatic abstraction of the state space. The ProB 2.0 API also provides a programmatic abstraction called a \emph{history} for the represenation of animations. This history consists of the trace of operations that have been executed for a given animation. A given state space can have an arbitrary number of animations. The user can switch between animations and work on any given animation at any given time. Thus, for the ProB 2.0 API, the notion of a \emph{current state} corresponds to the current states of the animation that the user is currently executing.
-
-	During the course of animation and model checking, the state of the ProB 2.0 API changes. The state space grows (i.e. new operations and states are cached), and the current state changes. In order for developers to be aware of these changes, a listener framework is offered. A developer can therefore implement classes that react when the current state in the animation changes, when new states are added to the state space, and when the specification that is being animated changes.
-
-	The API is programmatic and harnesses the power of the Groovy programming language. The ProB 2.0 API integrates a fully functioning groovy console into the final product. It is now possible for users and developers to write Groovy scripts that carry out desired functionality. There is also support for creating web applications that communicate with ProB. The console is actually a user interface that makes use of the jetty server that is integrated in the ProB 2.0 API. There are no eclipse dependencies present in the ProB 2.0 API, so it can be deployed as a jar file and integrated into any Java based application.
-
-	\item[ProB 2.0 Plugin] \hfill \\
-	Similar to the original ProB Plugin, the ProB 2.0 Plugin is an Eclipse plugin created for the Rodin platform. Much of the UI code has been directly imported from the original Plugin, so it appears to be very similar. However, the graphical interface is now built on top of the new programmatic abstractions that are available from the ProB 2.0 API, and changes that take place within the graphical interface are triggered by the ProB 2.0 API listener framework.
-
-\end{description}
+The visualizations that we have created in the course of this work are integrated into ProB 2.0. They pure JavaScript applications that communicate with Java servlets responsible for generating the data that needs to be visualized. Within the Eclipse user interface, they are simply loaded into a browser.
 
 \subsection{D3 and JavaScript}
 
