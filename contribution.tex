@@ -10,6 +10,7 @@ The visualization communicates with the servlet by setting up a polling interval
 
 \begin{center}
 \begin{figure}[h!]
+\centering
 \includegraphics[width=14cm]{bilder/communication.pdf}
 \caption{How visualizations communicate with the servlet that is responsible.}
 \label{communication}
@@ -20,6 +21,7 @@ The servlet is also connected to ProB 2.0 through the listener framework. Depend
 
 \begin{center}
 \begin{figure}[h!]
+\centering
 \includegraphics[width=14cm]{bilder/programFlow.pdf}
 \caption{Model of the program flow.}
 \label{programFlow}
@@ -99,10 +101,6 @@ x = transform(predicate, space_0 ) {
 viz0.apply(x)
 \end{lstlisting}
 
-
-
-
-
 \subsubsection{Extensibility}
 
 In addition to creating visualizations that are useful to the user, we also wanted to make it easy for other developers to create similar visualizations. In order to help with this, we encapsuled certain elements common to all of the visualizations into a separate script. In order to have access to these elements, a developer simply needs to include the script before that of his visualization. Currently, there are two main elements included in this script. Firstly, the user can use the \texttt{createCanvas} function to create a D3 selection that includes support for zooming (see Listing \ref{canvas}). Secondly, if the user wants to be able to apply the \texttt{Transformers} that are described in the last section, there is a built in function to apply a list of \texttt{Transformers} to the visualization (see Listing \ref{applyStyling}). In the future, it will also be possible to add more functions to this script to make it even easier to create visualizations for ProB.
@@ -133,19 +131,21 @@ When a state space visualization is opened, the visualization servlet responsibl
 
 \begin{center}
 \begin{figure}[h!]
-\includegraphics[width=13cm]{bilder/ss-zoomedOut.png}
-\caption{Visualization of the state space for the Scheduler example}
+\centering
+\includegraphics[width=13cm]{bilder/ss.png}
+\caption{Visualization of a partially explored state space for the Scheduler example}
 \label{zoomedOut}
 \end{figure}
 \end{center}
 
-Unfortunately, the state space contains an extremely large amount of information that has to be processed. This includes the values of the variables and the invariant for every state in the graph and the names and parameters of the operations that correspond to every edge in the graph. Because of this, it is rather difficult to create a useful visualization of the whole state space because the user not only wants to inspect how the state space appears as a whole but also the individual states within the operation. As a proposed solution of this problem, we used the zoom functionality that is available in D3. The main problem was that if the visualization of the nodes was large enough for the user to read the values of the variable at the given state, it would no longer be possible to see the state space as a whole. Instead of trying to meet both requirements at once, we simply made the text that is printed on the node and edge objects very small. When the visualization is created, the user can inspect the graph as a whole how the graph appears as a whole. The text for the given nodes, however, is virtually indiscernable. If the user wants to inspect a particular node, they can do so by zooming into the visualization. The text is then larger, and the user can see the nodes that are in the direct neighborhood of the node in question (see Figure \ref{neighborhood}). Then user can also click on the background of the visualization in order to pan through the visualization and inspect other nodes and edges. The visualization is also interactive. The user can grab a node and move it around to a desired position.
+Unfortunately, the state space contains an extremely large amount of information that has to be processed. This includes the values of the variables and the invariant for every state in the graph and the names and parameters of the operations that correspond to every edge in the graph. Because of this, it is rather difficult to create a useful visualization of the whole state space because the user not only wants to inspect how the state space appears as a whole but also the individual states within the operation. As a proposed solution of this problem, we used the zoom functionality that is available in D3. The main problem was that if the visualization of the nodes was large enough for the user to read the values of the variable at the given state, it would no longer be possible to see the state space as a whole. Instead of trying to meet both requirements at once, we simply made the text that is printed on the node and edge objects very small. When the visualization is created, the user can inspect the graph as a whole how the graph appears as a whole. The text for the given nodes, however, is virtually indiscernable. If the user wants to inspect a particular node, they can do so by zooming into the visualization. The text is then larger, and the user can see the values of the variables for the given state and the out going transitions (see Figure \ref{onestate}). Then user can also click on the background of the visualization in order to pan through the visualization and inspect other nodes and edges. The visualization is also interactive. The user can grab a node and move it around to a desired position.
 
 \begin{center}
 \begin{figure}[h!]
-\includegraphics[width=14cm]{bilder/ss-neighborhood.png}
-\caption{By zooming in, the user can inspect the neighborhood of a given state.}
-\label{neighborhood}
+\centering
+\includegraphics[width=14cm]{bilder/onestate.png}
+\caption{By zooming in, the user can inspect individual nodes.}
+\label{onestate}
 \end{figure}
 \end{center}
 
@@ -155,12 +155,26 @@ When new states are added to the state space, these states are added to the grap
 
 Status about the invariant is a available in the graph based on the color of the nodes. If an invariant violation is present, the node is colored red. If the invariant is ok, the node is colored green. Otherwise, if the invariant has not yet been calculated for the given node, the node is colored gray.
 
-\subsubsection{Visualization of Derived Graphs}
-
-There is also support for the visualization of graphs that are derived from the state space. ProB supports the generation of smaller graphs that are derived from the state space in question. These graphs show information about state space that is not obvious when dealing with the state space as whole. Two algorithms for derived graph generation are currently supported. The signature merge algorithm is supported (see Figure \ref{sigmerge}). The user can also create a transition diagram based on a user defined expression (see Figure \ref{transdiag}). 
+The state spaces often grow exponentially. This is known as the state space explosion problem. For this reason, a visualization of the entire state space can often be a great deal too much information for a user to process at any given time. For this reason, we have also made smaller graphs available that are derived from the original state space and can be more useful for the user to visualize. The user can choose from these visualizations in the dropdown menu in the upper left hand corner (see Figure \ref{userSelect}).
 
 \begin{center}
 \begin{figure}[h!]
+\centering
+\includegraphics[width=8cm]{bilder/menu.png}
+\caption{The user can select the desired visualization and play and pause the rendering.}
+\label{userSelect}
+\end{figure}
+\end{center}
+
+\subsubsection{Signature Merged State Spaces}
+
+The signature merge algorithm is the first of two algorithms for reducing the state space that have been implemented in this work. The algorithm works by merging all of the states which have the same outgoing transitions. This creates a state space that is considerably smaller but that still preserves information about the operations that are enabled for a given state \cite{LeTu05_8} (see Figure \ref{sigmerge}). 
+
+The graph that is generated with the signature merge algorithm differs based on the transitions that are of the interest of to the user. By default, all transitions are selected when the algorithm is run. However, it also possible to remove or readd transitions into the calculation of the algorithm. In order to allow the user to select the transitions of interest, we have implemented a small user interface that pops up when the user clicks on the settings icon (see Figure \ref{sigMergeUI}). The settings icon only becomes available when the user is in a mode dealing with the signature merge algorithm. The label for the nodes in this graph consists of a list of the outgoing transitions from the node and the number of states that have been merged into the node.  
+
+\begin{center}
+\begin{figure}[h!]
+\centering
 \includegraphics[width=14cm]{bilder/sigmerge.png}
 \caption{D3 Visualization of signature merge for Scheduler example}
 \label{sigmerge}
@@ -169,69 +183,68 @@ There is also support for the visualization of graphs that are derived from the 
 
 \begin{center}
 \begin{figure}[h!]
-\includegraphics[width=14cm]{bilder/transdiag-wo.png}
-\caption{D3 Visualization of the transition diagram of \texttt{active} in Scheduler example}
-\label{transdiag}
-\end{figure}
-\end{center}
-
-If the user wants to use the GraphViz algorithms and rendering engine, there is also support for both the signature merge (see Figure \ref{sigmergeDotty}) and transition diagram (see Figure \ref{transdiagDotty}).
-
-\begin{center}
-\begin{figure}[h!]
-\includegraphics[width=14cm]{bilder/dotty-sigmerge.png}
-\caption{GraphViz powered Visualization of signature merge for the Scheduler example}
-\label{sigmergeDotty}
-\end{figure}
-\end{center}
-
-\begin{center}
-\begin{figure}[h!]
-\includegraphics[width=14cm]{bilder/transdiag-dotty-wo.png}
-\caption{GraphViz powered Visualization of the transition diagram of \texttt{active} in Scheduler model}
-\label{transdiagDotty}
-\end{figure}
-\end{center}
-
-\subsubsection{User Interface} 
-There is also a basic user interface for the user to interact with the state space visualization. There is a drop down menu from which the user can decide which visualization he wants to view (see Figure \ref{userSelect}). 
-
-\begin{center}
-\begin{figure}[h!]
-\includegraphics[width=14cm]{bilder/selectVisualization.png}
-\caption{The user can select the desired visualization and play and pause the rendering.}
-\label{userSelect}
-\end{figure}
-\end{center}
-
-The signature merge algorithm is calculated based on the events in the model that is being animated. By default, all events are selected, but it is also possible for a user to disable events when calculating the signature merge algorithm. In the state space visualization, if the user is dealing with the signature merge graphs, a settings icon appears and the user can click on it and select or deselect the events that are of interest to him (see Figure \ref{sigMergeUI}).  
-
-\begin{center}
-\begin{figure}[h!]
-\includegraphics[width=14cm]{bilder/sigMergeUI.png}
+\centering
+\includegraphics[width=8cm]{bilder/sigMergeUI.png}
 \caption{User interface to chose events for signature merge.}
 \label{sigMergeUI}
 \end{figure}
 \end{center}
 
-When the user chooses to create a transition diagram from the menu, a prompt appears and the user can input the desired transition. When the transition diagram is calculated, a text field appears. In order to change the expression for a given transition diagram, the user can type it in the text field and submit it (see Figure \ref{transDiagUI}). The algorithm will then be recalculated and the graph will be rerendered.
+If the user wants to use the GraphViz algorithms and rendering engine, there is also support for visualizing the DOT representation of the signature merged state space that is generated from ProB (see Figure \ref{sigmergeDotty}). This is done using the Viz.js JavaScript library. The same user interface is available for the GraphViz generated graph, and the visualization supports zooming and panning in the same way as the D3 powered visualizations do.
 
 \begin{center}
 \begin{figure}[h!]
-\includegraphics[width=14cm]{bilder/transDiag-UI.png}
+\centering
+\includegraphics[width=14cm]{bilder/dotty-sigmerge.png}
+\caption{GraphViz powered Visualization of the signature merge algorithm for the Scheduler example}
+\label{sigmergeDotty}
+\end{figure}
+\end{center}
+
+\subsubsection{Transition Diagrams}
+
+The other reduction algorithm that is supported in this implementation is the creation of transition diagrams. In order to perform this algorithm, ProB receives an expression from the user. Then ProB calculates all of the possible solutions to the expression. These become the vertices in the graph. The edges in the graph show the transitions that change the value of the given expression to that of the value shown in the target state (see Figure \ref{transdiag}).
+
+\begin{center}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=14cm]{bilder/transdiag.png}
+\caption{D3 Visualization of the transition diagram of \texttt{active} in Scheduler example}
+\label{transdiag}
+\end{figure}
+\end{center} 
+
+When the user chooses to create a transition diagram from the menu, a prompt appears. This is how the user can specify the initial expression for the calculation of the transition diagram. Once the graph is calculated and rendered, a text field appears next to the drop down menu (see Figure \ref{transDiagUI}). If the user wants to change the expression that is being visualized, they can input a new expression here and submit it. The algorithm will then be recalculated and the graph will be rerendered.
+
+\begin{center}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=8cm]{bilder/transDiag-UI.png}
 \caption{The user can input a new expression to recalculate the transition diagram.}
 \label{transDiagUI}
 \end{figure}
 \end{center}
 
+If the user prefers the GraphViz represenation over the D3 powered visualization, it is also possible to generate a GraphViz based visualization for the transition diagram (see Figure \ref{transdiagDotty}). As with the signature merged state space, the UI for the GraphViz powered transition diagram is the same as that for the D3 powered visualization, and the visualization supports zooming and panning. Although the GraphViz algorithms are inherently offline, these visualizations make use of the visualization framework and are recalculated and rerendered every time that a change takes place within the state space.
+
+\begin{center}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=14cm]{bilder/transdiag-dotty-wo.png}
+\caption{GraphViz powered visualization of the transition diagram of \texttt{active} in Scheduler model}
+\label{transdiagDotty}
+\end{figure}
+\end{center}
+
 \subsection{Visualization of a B-type Formula}
 
-ProB already supported the functionality of expanding a formula into its subformulas and finding its value at a given state. However, the expanding of the formula took place lazily. A formula would be sent to ProB and then the direct subformulas of this formula would be sent back. The software would then have to contact ProB recursively until all of the subformulas had been calculated and cached. For the predicate visualization, we wanted the formula to be completely expanded and then sent in its entirety to ProB 2.0. In order to do this, we implemented a prolog predicate within ProB that performs the recursive expanding of a B formula before it is sent back to the ProB 2.0 application. The predicate also delivers the value of each subformula for the given state. This ensures that performance will not an issue. 
+ProB already supported the functionality of expanding a formula into its subformulas and finding its value at a given state. However, for any given formula, only the subformulas directly under the desired formula would be calculated. This algorithm was adapted so that all the subformulas are calculated automatically and a tree structure is built automatically. This structure is then cached, and can then be evaluated for any given state.
 
 The final visualization is interactive (see Figure \ref{predicate}). If a formula has subformulas, the user can select it from within the visualization to expand or to retract the subformulas. The subformulas are always either predicates or expressions. If they are expressions, they are colored white or light grey depending on whether they have subformulas or not. If the formula is a predicate that has evaluated to true for the given formula, the node is colored green. If the formula is a predicated that has evaluated to false, node is colored in red. The value of the given formula is also printed beneath the formula. This allows the user to visually identify the parts of the formulas and their given values. 
 
 \begin{center}
 \begin{figure}[h!]
+\centering
 \includegraphics[width=14cm]{bilder/invariant.png}
 \caption{Visualization of the invariant of the Scheduler model}
 \label{predicate}
@@ -242,16 +255,27 @@ In the implementation of the formula, the D3 tree layout is used. The expanding 
 
 \subsection{Visualization of the Value of a Formula Over Time}
 
-ProB 2.0 supports the evaluation of a given formula over the course of the history of an animation.
-Because a state is defined by the values that the variables take on when dealing with B type specification languages, it can be particularly interesting to be able to examine the value of a variable over the course of a trace when dealing with a Classical B or Event-B formula. 
+The last visualization that we have created in the course of this work is the visualization of the value of a given formula over the course of an animation.
+Because a state is defined by the values that the variables take on when dealing with B type specification languages, it can be interesting to be able to examine the value of a variable over the course of a trace. This is particularly interesting when the concept of time is present in the model being animated. In this case, the user is often only interested in inspecting a particular variable to see how it changes over time. 
 
-In order for the ProB 2.0 to evaluate a formula, it extracts the list of states that the animation visits over the course of its history. Then it contacts ProB and extracts the value that the formlua takes on for each state in the list. This information is then processed by D3 to produce a simple line plot (see Figure \ref{timeVsValue}). Expressions that take on boolean values and integer values can be visualized. If the current state changes, the formula is recalculated and a new plot is produced.
+When the visualization is created, the user specifies the formula that is to be visualized. The user can also specify a second expression which will serve as the value for the time axis. Then it contacts ProB and extracts the value that the formlua takes on for each state in the list. This information is then processed by D3 to produce a simple line plot (see Figure \ref{timeVsValue}). Expressions that take on boolean values and integer values can be visualized. If the current state changes, the formula is recalculated and a new plot is produced.
 
 \begin{center}
 \begin{figure}[h!]
-\includegraphics[width=14cm]{bilder/timeVsValue.png}
-\caption{Visualization of value of \emph{card(active)} from the Scheduler model over the course of an animation.}
+\centering
+\includegraphics[width=14cm]{bilder/valueOverTime.png}
+\caption{Visualization of value of the cardinality of the variables from the Scheduler model over the course of an animation.}
 \label{timeVsValue}
 \end{figure}
 \end{center}
 
+As seen in Figure \ref{timeVsValue}, it is possible to visualize multiple formulas at the same time. In order to add a formula to the visualization, the user can input a new formula in the text box in the upper left hand corner (see Figure \ref{timeVsValueUI}).
+
+\begin{center}
+\begin{figure}[h!]
+\centering
+\includegraphics[width=8cm]{bilder/timeVValueUI.png}
+\caption{The user can add an expression to the visualization.}
+\label{timeVsValueUI}
+\end{figure}
+\end{center}
