@@ -28,14 +28,22 @@ The servlet is also connected to ProB 2.0 through the listener framework. Depend
 
 \subsubsection{User interaction with the visualizations}
 
-Once we implemented a way to integrate the visualization servlets into the ProB 2.0 application, it was still necessary to implement an easy way for the user to interact with the visualizations. One of the main advantages of the D3 visualization framework is the flexibility for the user. Using the D3 selectors, it is possible for the user to select and change the attributes of any of the elements of the visualization. In order to offer this functionality to the users from within the ProB 2.0 application, we decided that we needed to lift the functionality from the JavaScript level into the existing groovy console. This was accomplished by creating a \texttt{Transformer} object that represents the action that the user wants to carry out in the visualization. Then the \texttt{Transformer} object is added to the particular visualization and is applied the next time the visualization is redrawn. The \texttt{Transformer} object was written so that its functionality is similar to what the user would actually write using the D3 library.
+Once we implemented a way to integrate the visualization servlets into the ProB 2.0 application, it was still necessary to implement an easy way for the user to interact with the visualizations. We wanted the user to be able to directly manipulate how the visualization appears. One of the main advantages of the D3 visualization framework is the flexibility that it provides for the developer. Using D3 selectors, it is possible for a developer to select and change the attributes of any of the elements of the visualization. We wanted the user to also be able to select and manipulate the visualization from within ProB. 
 
-We wanted how the user interacted with the visualization to be as natural as possible. The user should not have a hard time learning how to manipulate the visualization. For this reason, we decided to create a small DSL that would enable the user to specify which attributes should change within a particular visualization. It is possible for the user to create \texttt{Transformers} in the console (see Listing \ref{transformer}). To do this, the user can specify a selection based on the W3C Selection API. It also specifies the attributes that should be changed for the specified selectors. The user can then apply this \texttt{Tranformer} to the servlet that is responsible for generating the data for a given transformation. To this purpose, when a new servlet is created, a variable is created in the groovy console that corresponds to the servlet in question so that the user can apply \texttt{Transformers} to the visualization directly.
+In order to allow the user to directly manipulate the DOM of the visualization, we decided to lift the functionality of the D3 selectors from the JavaScript level into the Java application. For this purpose, we defined a \texttt{Transformer} object. A \texttt{Transformer} consists mainly of a selector string and the \texttt{set} method. The \texttt{Transformer} is created by defining a selector based on the W3C Selectors API and calling the \texttt{set} method for every attribute that the user wants to manipulate. Because the \texttt{set} method returns the instance of the \texttt{Transformer}, it is possible chain the method calls together (see Lisiting \ref{javaTransformer}).
+
+\lstset{language=java}
+\begin{lstlisting}[caption=Define a \texttt{Transformer} in Java,label=javaTransformer]
+// Select elements with ids "sroot" and "s1" and set their fill and stroke attributes
+Transformer t = new Transformer("#sroot,#s1").set("fill","red").set("stroke","gray");
+\end{lstlisting}
+
+Every visualization servlet contains a list of \texttt{Transformers} that is sent to the visualization every time that it is polled. The visualization can then apply the \texttt{Transformers} to the DOM. We now needed a way for the user to create \texttt{Transformers} and add them to the visualization. It is possible to add a \texttt{Transformer} to a visualization servlet by calling the \texttt{apply} method present in all of the visualization servlets. When we create a new visualization servlet, we automatically create a variable in the Groovy console. The user can also use the \texttt{transform} closure available in the Groovy console to create \texttt{Transformers} which can then be applied to the visualization (see Listing \ref{transformer}).
 
 \lstset{language=java}
 \begin{lstlisting}[caption=Define rules for the transformation of visualization elements,label=transformer]
-// Select elements with ids "rroot" and "r1" and set their fill and stroke attributes
-x = transform("#rroot,#r1") {
+// Select elements with ids "sroot" and "s1" and set their fill and stroke attributes
+x = transform("#sroot,#s1") {
         set "fill", "red"
         set "stroke", "gray"
 }
@@ -54,18 +62,35 @@ colorize = { selection, color ->
                 }    
            }
 
-// Color elements "rroot" and "r1" green
-viz0.apply(colorize("#rroot,#r1", "green"))
+// Color elements "sroot" and "s1" green
+viz0.apply(colorize("#sroot,#s1", "green"))
 \end{lstlisting}
 
-These \texttt{Transformers} are sent to the visualization every time that it is polled. The visualizations can then apply them. It is therefore possible for the user to manipulate the visualization. Unfortunately, in order to define these \texttt{Transformers}, the user needs to have some idea of how the elements are named internally. For the state space visualization, we also introduced an abstaction that filters a state space by predicate and produces a \texttt{Transformer} based on the states that are calculated (see Listing \ref{dynamicTransformer}). When new states are added to the state space, these will also be filtered based on the given predicate and the \texttt{Transformer} will be updated accordingly. 
+The downside to this mechanism is that the user needs to have a good idea about the internal representation of the DOM in order to manipulate the visualizations. This mechanism is especially interesting for the state space visualization, so we spent more time defining the ids for the DOM elements. The SVG objects that are created using D3 are generated using the state ids and transition ids that are assigned by ProB. These element ids can be seen in Table \ref{tab:elements}.
+
+\begin{table}[h!]
+\caption{Generated Element Ids for Elements in State Space Visualization}
+\label{tab:elements}
+\begin{center}
+\begin{tabular}{ | l | l | }
+\hline
+\textbf{Element} & \textbf{Generated Element Id} \\ \hline \hline
+transition & \texttt{t + }\emph{transition id} \\ \hline
+text on transition & \texttt{tt + }\emph{transition id} \\ \hline
+state & \texttt{s + }\emph{state id} \\ \hline
+text on state & \texttt{st + }\emph{state id} \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+It is also possible in ProB to filter a state space based on a predicate. This means that it is possible to give ProB a predicate and receive a list of state ids for which the given predicate holds. Ideally, however, we would want a \texttt{Transformer} based on a given predicate to be updated in the case that the state space changes.. For this purpose, we have introduced a \texttt{Transformer} that will be updated in the case that new states are added to the state space. The user can create such a transformer by specifying a predicate and a state space object (see Listing \ref{dynamicTransformer}). Currently, this will only update the state objects in the DOM, but in the future, the same concept can be applied for all of the different elements. 
 
 \begin{lstlisting}[caption=Create a \texttt{Transformer} based on the states that match a given predicate,label=dynamicTransformer]
 // Define your formula
 predicate = "active\\/waiting={}" as ClassicalB
 
 // Create a Transformer that will filter the given state space (saved in space0) according to the given predicate
-x = transform(predicate, space0 ) {
+x = transform(predicate, space_0 ) {
 		set "fill", "blue"
 		set "stroke", "white"
 }
@@ -73,6 +98,10 @@ x = transform(predicate, space0 ) {
 // Apply the Transformer to the visualization
 viz0.apply(x)
 \end{lstlisting}
+
+
+
+
 
 \subsubsection{Extensibility}
 
