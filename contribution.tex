@@ -126,22 +126,22 @@ applyStyling(styling);
 
 \subsubsection{Main visualization}
 
-When a state space visualization is opened, the visualization engine responsible for the state space visualization takes the state space associated with the current animation and extracts the information about the nodes and edges contained within the graph. This information is then processed using the D3 force layout and rendered to create a visualization (see Figure \ref{zoomedOut}). As a basis for this visualization, we used the Force Directed Graph example created by Michael Bostock (see Appendix \ref{appendix:force}). 
+When a state space visualization is opened, the visualization engine responsible for the state space visualization takes the state space associated with the current animation and extracts the information about the states and transitions contained within the graph. This information is then processed using the D3 force layout and rendered to create a visualization (see Figure \ref{zoomedOut}). As a basis for this visualization, we used the Force Directed Graph example created by Michael Bostock (see Appendix \ref{appendix:force}). A user can open the state space visualization by selecting \textsf{Analyze > Open State Space Visualization} in the \textsf{ProB} menu of the ProB 2.0 application. This will open a new visualization of the state space for the current animation. 
 
-Unfortunately, in some cases the state space contains an extremely large amount of information that has to be processed. This includes the values of the variables and the invariant for every state in the graph and the names and parameters of the transitions that correspond to every edge in the graph. Because of this, it is rather difficult to create a useful visualization of the whole state space because the user not only wants to inspect the structure of the state space as a whole but also the individual states within the operation. 
+Unfortunately, in some cases the state space contains an extremely large amount of information that has to be processed. This includes the values of the variables and the invariant for every state in the graph and the names and parameters of the transitions that correspond to every edge in the graph. Because of this, it is rather difficult to create a useful visualization of the whole state space because the user not only wants to inspect the structure of the state space as a whole but also the individual states. 
 
 \begin{center}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=13cm]{bilder/ss.png}
+\includegraphics[width=14cm]{bilder/ss.png}
 \caption{Visualization of a partially explored state space for the Scheduler example}
 \label{zoomedOut}
 \end{figure}
 \end{center}
 
-As a proposed solution of this problem, we used the zoom functionality that is available in D3. The main problem was that if the visualization of the nodes was large enough for the user to read the values of the variable at the given state, it would no longer be possible to see the state space as a whole. Instead of trying to meet both requirements at once, we simply made the text that is printed on the node and edge objects very small. When the visualization is created, the user can view the graph to see how the state space appears as a whole. The text for the given nodes, however, is virtually indiscernable. If the user wants to inspect a particular node, they can do so by zooming into the visualization. The text is then larger, and the user can see the values of the variables for the given state and the outgoing transitions (see Figure \ref{onestate}). Then user can also click on the background of the visualization in order to pan through the visualization and inspect other nodes and edges. The visualization is also interactive. The user can grab a node and move it around to a desired position.
+As a proposed solution of this problem, we used the zoom functionality that is available in D3. The main problem was that if the visualization of the nodes was large enough for the user to read the values of the variable at the given state, it would no longer be possible to see the state space as a whole. Instead of trying to meet both requirements at once, we simply made the text that is printed on the state and transition objects very small. When the visualization is created, the user can view the graph to see how the state space appears as a whole. The text for the individual states, however, is virtually indiscernable. If the user wants to inspect a particular state, they can do so by zooming into the visualization. The text is then larger, and the user can see the values of the variables for the given state and the outgoing transitions (see Figure \ref{onestate}). Then user can also click on the background of the visualization in order to pan through the visualization and inspect other states and transitions. The visualization is also interactive. The user can grab a state and move it around to a desired position.
 
-We had some performance issues that were associated with the rendering very large state spaces. The force layout keeps adjusting the graph until it reaches a fixpoint. The problem was that as the state space grew, there were more and more objects that had to be rendered. The force calculates the position of the nodes in the graph iteratively. By default, the graph is rerendered in every iteration of the calculation of the graph layout. When the number of states in a state space is very large, the rendering and therefore the calculation of the layout, takes a lot of resources. This affected not only the appearance of the visualization, but it also cost enough resources that the whole eclipse plugin became unresponsive. The solution we found to the problem was to allow the user to turn off the rendering of the graph. The user can do this by selecting the play/pause button in the upper left hand corner of the visualization (see Figure \ref{userSelect}). The visualization will then freeze in the position that is is currently drawn. The force layout, however, will continue running in the background, so if the user decides to turn on the rendering, the graph will hopefully have had time to stabilize.
+We had some performance issues that were associated with the rendering very large state spaces. The force layout keeps adjusting the graph until it reaches a fixpoint. The problem was that as the state space grew, there were more and more objects that had to be rendered. The force calculates the position of the vertices in the graph iteratively. By default, the graph is rerendered in every iteration of the calculation of the graph layout. When the number of states in a state space is very large, the rendering and therefore the calculation of the layout, takes a lot of resources. This affected not only the appearance of the visualization, but it also cost enough resources that the whole eclipse plugin became unresponsive. The solution we found to the problem was to allow the user to turn off the rendering of the graph. The user can do this by selecting the play/pause button in the upper left hand corner of the visualization (see Figure \ref{userSelect}). The visualization will then freeze in the position that is is currently drawn. The force layout, however, will continue running in the background, so if the user decides to turn on the rendering, the graph will hopefully have had time to stabilize.
 
 \begin{center}
 \begin{figure}[h!]
@@ -169,18 +169,21 @@ The state spaces often grow exponentially. This is known as the state space expl
 
 \subsubsection{Signature Merged State Spaces}
 
-The signature merge algorithm is the first of two algorithms for reducing the state space that have been implemented in this work. The algorithm works by merging all of the states which have the same outgoing transitions. This creates a state space that is considerably smaller but that still preserves information about the operations that are enabled for a given state \cite{LeTu05_8} (see Figure \ref{sigmerge}). 
+The signature merge algorithm is the first of two algorithms for reducing the state space that have been implemented in this work (see Figure \ref{sigmerge}). 
 
 \begin{center}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=14cm]{bilder/sigmerge.png}
-\caption{D3 Visualization of signature merge for Scheduler example}
+\includegraphics[width=11cm]{bilder/sigmerge.png}
+\caption{D3 Visualization of signature merge for the Scheduler example}
 \label{sigmerge}
 \end{figure}
 \end{center}
 
-If the user wants to use the GraphViz algorithms and rendering engine, there is also support for visualizing the DOT representation of the signature merged state space that is generated from ProB (see Figure \ref{sigmergeDotty}). This is done using the Viz.js JavaScript library. The visualization supports zooming and panning in the same way as the D3 powered visualizations do.
+
+The algorithm works by merging all of the states which have the same outgoing transitions. This creates a state space that is considerably smaller but that still preserves information about the operations that are enabled for a given state. 
+
+If the user wants to use the GraphViz algorithms and rendering engine, there is also support for visualizing the DOT representation of the signature merged state space that is generated from ProB (see Figure \ref{sigmergeDotty}). 
 
 \begin{center}
 \begin{figure}[h!]
@@ -191,8 +194,9 @@ If the user wants to use the GraphViz algorithms and rendering engine, there is 
 \end{figure}
 \end{center}
 
+Rendering of the DOT graph specification is done using the Viz.js JavaScript library. The visualization supports zooming and panning in the same way as the D3 powered visualizations do.
 
-The graph that is generated with the signature merge algorithm differs based on the transitions that are of the interest of to the user. By default, all transitions are selected when the algorithm is run. However, it also possible to select the desired transitions for the calculation of the algorithm. In order to allow the user to select the transitions of interest, we have implemented a small user interface that pops up when the user clicks on the settings icon (see Figure \ref{sigMergeUI}). The settings icon only becomes available when the user is in a mode dealing with the signature merge algorithm. The label for the nodes in this graph consists of a list of the outgoing transitions from the node and the number of states that have been merged into the node.  
+The graph that is generated with the signature merge algorithm differs based on the transitions that are of the interest of to the user. By default, the algorithm is calculated using all of the transitions that are present in the model. However, it also possible to select the desired transitions for the calculation of the algorithm. In order to allow the user to select the transitions of interest, we have implemented a small user interface that pops up when the user clicks on the settings icon (see Figure \ref{sigMergeUI}). The settings icon only becomes available when the user is in a mode dealing with the signature merge algorithm. The label for the nodes in this graph consists of a list of the outgoing transitions from the node and the number of states that have been merged into the node.  
 
 \begin{center}
 \begin{figure}[h!]
@@ -227,7 +231,7 @@ When the user chooses to create a transition diagram from the menu, a prompt app
 \begin{figure}[h!]
 \centering
 \includegraphics[width=14cm]{bilder/transdiag.png}
-\caption{D3 Visualization of the transition diagram of \texttt{active} in Scheduler example}
+\caption{D3 Visualization of the transition diagram of \texttt{active} in the Scheduler example}
 \label{transdiag}
 \end{figure}
 \end{center} 
@@ -238,14 +242,14 @@ When the user chooses to create a transition diagram from the menu, a prompt app
 \begin{figure}[h!]
 \centering
 \includegraphics[width=14cm]{bilder/transdiag-dotty-wo.png}
-\caption{GraphViz powered visualization of the transition diagram of \texttt{active} in Scheduler model}
+\caption{GraphViz powered visualization of the transition diagram of \texttt{active} in the Scheduler model}
 \label{transdiagDotty}
 \end{figure}
 \end{center}
 
 \subsection{Visualization of a B-type Formula}
 
-ProB already supported the functionality of expanding a formula into its subformulas and finding its value at a given state. However, for any given formula, only the subformulas directly under the desired formula would be calculated. This algorithm was adapted so that all the subformulas are calculated recursively and a tree structure is built automatically. This structure is then cached, and can then be evaluated for any given state. 
+ProB already supported the functionality of expanding a formula into its subformulas and finding its value at a given state. However, for any given formula, only the subformulas directly under the desired formula would be calculated. This algorithm was adapted so that all the subformulas are calculated recursively and a tree structure is built automatically. This structure is then cached, and can then be evaluated for any given state. The user can create a new visualization for a formula by selecting \textsf{Analyze > Open Visualization of Formula} from the \textsf{ProB} menu and entering the desired formula in the prompt that pops up, or by right clicking on a formula in the \textsf{State Inspector} view and selecting \textsf{Open Visualization of Formula}.
 
 The final visualization is interactive (see Figure \ref{predicate}). If a formula has subformulas, the user can select it from within the visualization to expand or to retract the subformulas. The subformulas are always either predicates or expressions. If they are expressions, they are colored white or light grey depending on whether they have subformulas or not. If the formula is a predicate that has evaluated to true for the given formula, the node is colored green. If the formula is a predicated that has evaluated to false, node is colored in red. The value of the given formula is also printed beneath the formula. This allows the user to visually identify the parts of the formulas and their given values. 
 
@@ -260,12 +264,12 @@ The final visualization is interactive (see Figure \ref{predicate}). If a formul
 
 In this visualization, the D3 tree layout is used. The expanding and collapsing of the nodes takes place with a simple JavaScript function. This design of this visualization is based on the Collapsible Tree Layout from the D3 website (see Appendix \ref{appendix:tree}). By harnessing the power of the D3 zoom behavior, it is also possible to zoom in and out of the visualization and to pan the image to inspect it closer. When the current state in the animation changes, the formula is recalculated and the visualization is redrawn.
 
-\subsection{Visualization of the Value of a Formula Over Time}
+\subsection{Visualization of the value of a formula over time}
 
 The last visualization that we have created in the course of this work is the visualization of the value of a given formula over the course of an animation.
 This can be especially useful if the user is interested in analyzing models with a temporal element. 
 
-When the visualization is created, the user specifies a formula that is to be evaluated for all the states in the current animation. Optionally, the user can also specify a second expression which will represent the temporal element for the model. In this case, the values of the first formula will be plotted against the values of the expression that the user has inputted. Otherwise, the values of the first formula will be plotted against the number of animation steps.
+To create this visualization, the user can select \textsf{Analyze > Open Time vs Value Visualization} from the \textsf{ProB} menu. A prompt will then pop up and the user can specify the formula that is to be evaluated for all the states in the current animation. Optionally, the user can also specify a second expression which will represent the temporal element for the model. In this case, the values of the first formula will be plotted against the values of the expression that the user has inputted. Otherwise, the values of the first formula will be plotted against the number of animation steps.
 
 The value pairs that are produced through this evaluation are processed by D3 to produce a simple line plot (see Figure \ref{timeVsValue}). If the current state changes, the formula is recalculated and a new plot is produced.
 

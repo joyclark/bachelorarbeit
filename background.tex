@@ -26,13 +26,13 @@ D3 provides a selector API based on CSS3 that is similar to jQuery\footnote{http
 
 D3 also provides further functionality for manipulating the DOM. Developers can define a scale based on the domain and range of values that are defined in the data provided by the user. The placement of elements within the document can then be placed according to the desired scale. D3 provides support for many different types of scales including linear scales, power scales, logarithmic scales, and temporal scales. Axes can also be created to correspond to the defined scale.
 
-The user has the ability to change the DOM as needed. However, D3 also supports a large number of visualization layouts so that the user does not have to define the positions for the elements in a given visualization. The two layouts that are of relevance for this work are the tree layout and the spring layout.
+The user has the ability to change the DOM as needed. However, D3 also supports a large number of visualization layouts so that the user does not have to define the positions for the elements in a given visualization. The two layouts that are of relevance for this work are the tree layout and the force layout.
 
 The tree layout uses the Rheingold-Tilford algorithm for drawing tidy trees \cite{Reingold81}. The force layout uses an algorithm created by Dwyer \cite{Dwyer2009} to create a scalable and constrained graph layout. The physical simulations are based on the work by Jakobsen \cite{Jakobsen03}. The implementation ``uses a quadtree to accelerate charge interaction using the Barnes–Hut approximation. In addition to the repulsive charge force, a pseudo-gravity force keeps nodes centered in the visible area and avoids expulsion of disconnected subgraphs, while links are fixed-distance geometric constraints. Additional custom forces and constraints may be applied on the ``tick'' event, simply by updating the x and y attributes of nodes'' \cite{D3Wiki}.
 
 To help the viewer interact with the visualization, D3 provides support for the zoom and drag behaviors. This listens to the mouse clicks commonly associated with zooming (i.e. scrolling, double clicking) and enlarges the image as would be expected. With this same mechanism, the developer can enable the user to grab hold of the canvas and pan through the image to inspect it closer.
 
-It is very easy to begin developing with D3. The API is described in detail on the D3 Wiki \cite{D3Wiki}, and the D3 website\footnotemark[3] includes an extensive array of examples that new developers can use as a starting off point. The D3 developer community is very large, so it is easy to find answers to almost every question online. 
+It is very easy to begin developing with D3. The API is described in detail in the D3 Wiki \cite{D3Wiki}, and the D3 website\footnotemark[3] includes an extensive array of examples that new developers can use as a starting off point. The D3 developer community is very large, so it is easy to find answers to almost every question online. 
 
 \lstset{language=Java}
 \begin{lstlisting}[caption=Dynamically create a dropdown menu.,label=d3Example]
@@ -75,7 +75,7 @@ dropdown.select("#op3")
 
 \subsection{GraphViz integration with emscripten}
 
-The current visualizations available the Tcl/Tk version of ProB are powered using the GraphViz\footnote{http://www.graphviz.org} graph visualization software. There is support for generating graphs for the state space in the DOT graph language. The problem with this, and the reason that we are researching other alternatives, is that drawing GraphViz graphs is rather inefficient. However, for the state spaces that are derived using the signature merge algorithm, or for the transition diagrams that can be created from a state space, these graphs are quite pleasing to the eye. The derived graphs are also usually small enough that they can be drawn efficiently.
+The current visualizations available the Tcl/Tk version of ProB are powered using the GraphViz\footnotemark[1] graph visualization software. There is support for generating graphs for the state space in the DOT graph language. The problem with this, and the reason that we are researching other alternatives, is that drawing GraphViz graphs is rather inefficient. However, for the state spaces that are derived using the signature merge algorithm, or for the transition diagrams that can be created from a state space, these graphs are quite pleasing to the eye. The derived graphs are also usually small enough that they can be drawn efficiently.
 
 For this reason, we wanted to somehow be able to visualize small graphs written in the DOT language. In order to do this, we took advantage of the emscripten compiler \cite{emscripten}. This is a compiler that compiles LLVM bitcode to JavaScript so that it can be run in any modern browser. C programs can be compiled to LLVM. We used the Viz.js JavaScript library\footnote{https://github.com/mdaines/viz.js} developed by Mike Daines who has used emscripten in order to compile GraphViz from C to JavaScript and has provided a wrapper function to produce SVG visualizations. For example, the code shown in Listing \ref{vizJs} will produce Figure \ref{graphVizEx}.
 
@@ -92,3 +92,5 @@ $("#elementId").replaceWith(svg);
 \label{graphVizEx}
 \end{figure}
 \end{center}
+
+\pagebreak

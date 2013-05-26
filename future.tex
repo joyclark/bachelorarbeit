@@ -1,11 +1,17 @@
 \section{Future Work}
 
-One of the main features we implemented in this work was the creation of a visualization framework. In order to create new visualizations, some work by a developer will have to be done, but a lot of the elements of the existing visualizations can be adapted to minimize the work that the developer will have to do. As we have mentioned before, we have made a JavaScript library avaliable to make it easier to create new D3 powered visualizations within ProB. A developer will also be able to extend the session based servlet that we have created to create the visualization engine that he needs for his new visualization.
+One of the main features we implemented in this work was the creation of a visualization framework. We have attempted to make the elements used for the visualization engines and the visualizations extensible. It should now be relatively simple to create new visualizations and integrate them into the existing visualization framework.
 
-ProB 2.0 still does not have all of the visualization elements that are available in the Tcl/Tk version of ProB. Therefore, future work will entail the use of this existing visualization framework in order to recreate these visualization in ProB 2.0. For instance, one possible visualization could be the implementation of a graphical representation of a state within ProB 2.0. Another could be the implementation of a visualization of the refinement hierarchy that is present in Classical B and Event-B models.
+In the future, we will use this basis to create other useful visualizations for the user. ProB 2.0 still does not have all of the visualizations that are available in the Tcl/Tk version of ProB. For instance, we still need to implement the graphical visualization of a state within ProB 2.0. We will also likely create a visualization of the refinement hierarchy that is present in Classical B and Event-B models.
 
 One of the projects in ProB 2.0 that is currently underway is the development of a worksheet element. This will serve as documentation and a means to run groovy scripts within the application. In the future, it should be possible to embed the visualizations created in the scope of this work within the worksheet element. 
 
-The state space visualization and the visualization of a formula over time are not language specific. It is possible to use the visualizations for any specification language that ProB supports. For the visualization of the breakdown of a formula, however, this is not the case. The current implementation supports only Classical B and Event-B formulas. In the future, work could be done to support formulas from other formalisms.
+Because time was limited during the course of this work, we have not had the time to implement all of the features that we would have liked to implement for all of the visualizaitons. Future features for the existing visualizations could include:
 
-Current visualizations will also need to be maintained and updated to add functionality. For instance, it might be possible to integrate the proposed state visualization with the existing state space visualization. Then, when a user would select a state, a window would pop up displaying the state visualization for that particular state.
+\begin{itemize}
+
+	\item Support for the visualization of formulas in specification languages other than Classical B and Event-B.
+	\item Redefinition of the element ids for the Formula and Value Over Time visualizations so that it is easier for the user to customize the appearance of the visualizations.
+	\item Introduction of a better mechanism to manage (i.e. add and remove) formulas from the Value Over Time visualization.
+
+\end{itemize}
