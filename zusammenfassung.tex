@@ -2,4 +2,12 @@
 \section*{\ifthenelse{\equal{\sprache}{deutsch}}{Zusammenfassung}{Abstract}}
 %%% Zusammenfassung:
 
-The ProB tool performs the animation and verification of models written in several different formal specification languages. Here we propose a method for the generation of dynamic visualizations to help users better understand the results that are produced from ProB. In order to do this, we used the D3 JavaScript library to generate visualizations based on the data produced by ProB. In this work, we will present three new visualizations that are available for the user. We will also describe the new visualization framework that has been implemented to allow the user to interact with the visualizations and to allow the visualizations to be updated when changes in ProB take place. In the future, it should be relatively easy for developers to extend the existing framework to make new visualizations.
+The ProB tool performs the animation and verification of formal models  through consistency checking and animation. Here we propose a method for the generation of dynamic visualizations to help users better understand the results that are produced from ProB. In order to do this, we used the D3 JavaScript library to generate visualizations based on the data produced by ProB. In this work, we will present three new visualizations that are available for the user:
+
+\begin{enumerate}
+	\item The visualization of the state space graph for the formal model that is being verified. This visualization also allows the user to apply graph reduction algorithms to the state space to create a derived graph that is easier to read. 
+	\item The visualization of a formula and its subformulas evaluated at the current state of an animation.
+	\item The visualization of the value that a formula or formulas take on over the course of an animation.
+\end{enumerate}
+
+We will also describe the new visualization framework that has been implemented to allow the user to interact with the visualizations and to allow the visualizations to be updated when changes in ProB take place. We have found that the integration of these dynamic visualization have improved the over all user experience of ProB.
