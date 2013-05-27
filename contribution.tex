@@ -276,15 +276,13 @@ The value pairs that are produced through this evaluation are processed by D3 to
 \begin{center}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=14cm]{bilder/valueOverTime.png}
-\caption{Visualization of value of the cardinality of the variables from the Scheduler model over the course of an animation.}
+\includegraphics[width=15cm]{bilder/vOtOver.png}
+\caption{Visualization of the value of \texttt{level} and \texttt{pump} over \texttt{time} for the water tank example.}
 \label{timeVsValue}
 \end{figure}
 \end{center}
 
-It is also possible to visualize multiple formulas at the same time. In order to add a formula to the visualization, the user can input a new formula in the text box in the upper left hand corner (see Figure \ref{timeVsValueUI}).
-
-It is possible to visualize predicates and expressions that take on integer or boolean values. If the formula that is being visualized is a predicate or an expression that takes on a boolean value, the resulting value is mapped to an integer value (i.e. TRUE is mapped to 1 and FALSE is mapped to 0) (see Figure \ref{valueBool}).
+It is possible to visualize multiple formulas at the same time. In order to add a formula to the visualization, the user can input a new formula in the text box in the upper left hand corner (see Figure \ref{timeVsValueUI}).
 
 \begin{center}
 \begin{figure}[h!]
@@ -295,11 +293,15 @@ It is possible to visualize predicates and expressions that take on integer or b
 \end{figure}
 \end{center}
 
+There are two modes for viewing the line plots. The first mode plots all of values in the same line plot. If the user want to view each individual line separately, he can select the \textsf{Toggle Mode} button in the lower right corner of the visualization. This will produce a separate line plot for each formula (see Figure \ref{vOtEach}).
+
+It is possible to visualize predicates and expressions that take on integer or boolean values. If the formula that is being visualized is a predicate or an expression that takes on a boolean value, the resulting value is mapped to an integer value. If all of the formulas are being drawn in the same line plot, the boolean value TRUE will be mapped to the maximum value of all the data sets. Otherwise, it will be mapped to 1. The boolean value FALSE is always mapped to 0.
+
 \begin{center}
 \begin{figure}[h!]
 \centering
-\includegraphics[width=14cm]{bilder/valueBool.png}
-\caption{The value of predicates and boolean expressions can also be visualized.}
-\label{valueBool}
+\includegraphics[width=15cm]{bilder/vOtEach.png}
+\caption{Visualization of separate line charts for \texttt{level} and \texttt{pump} over \texttt{time} in the water tank example.}
+\label{vOtEach}
 \end{figure}
 \end{center}
